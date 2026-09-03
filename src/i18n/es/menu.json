@@ -1,0 +1,10 @@
+{
+  "noWorkspace": "Aquí no hay todavía un workspace de IA.",
+  "actionStart": "te guía con preguntas y prepara todo",
+  "actionHelp": "ver todos los comandos",
+  "gitDetected": "Repositorio git detectado en {root} (rama {branch}).",
+  "workspace": "Workspace de IA: {root}",
+  "actionClaude": "abrir Claude Code protegido",
+  "actionStatus": "ver si todo está bien",
+  "actionUp": "levantar la base de datos de pruebas y los mocks"
+}

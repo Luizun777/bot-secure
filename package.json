@@ -1,0 +1,40 @@
+{
+  "name": "bot-secure",
+  "version": "0.1.0",
+  "description": "Prepara tu proyecto para usar Claude Code sin exponer secretos ni datos de clientes. Crea un workspace de IA seguro con tu back, tu front y una base de datos de pruebas.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "bot-secure": "bin/bot-secure.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "templates",
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node scripts/test.mjs unit",
+    "test:e2e": "node scripts/test.mjs e2e",
+    "test:all": "node scripts/test.mjs unit e2e",
+    "build": "node scripts/build.mjs",
+    "check": "node --check bin/bot-secure.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  },
+  "keywords": [
+    "claude-code",
+    "secrets",
+    "security",
+    "ai",
+    "scanner",
+    "pii",
+    "mexico"
+  ]
+}

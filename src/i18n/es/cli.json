@@ -1,0 +1,14 @@
+{
+  "tagline": "Prepara tu proyecto para usar Claude Code sin exponer secretos ni datos de clientes.",
+  "usage": "Uso: bot-secure <comando> [opciones]",
+  "startHere": "Para empezar: bot-secure start   ·   Para abrir Claude Code protegido: bot-secure claude",
+  "commands": "Comandos",
+  "advanced": "Avanzado",
+  "globalFlags": "Opciones globales: --json  --dry-run  --yes  --lang es|en  --help  --version",
+  "moreHelp": "Ayuda de un comando: bot-secure <comando> --help",
+  "unknownCommand": "No existe el comando \"{command}\".",
+  "didYouMean": "¿Quisiste decir \"{suggestion}\"?",
+  "fix": "Arreglo: {fix}",
+  "internalError": "Error interno: {message}",
+  "version": "bot-secure {version}"
+}

@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+# artefactos del propio bot aplicado a este repo (dogfooding)
+.bot-secure/reports/
+.bot-secure/local.json
+.bot-secure/ai-keys/
+.claude/state/
+.claude/settings.local.json
+CLAUDE.local.md
+# temporales de pruebas
+test/e2e/tmp/

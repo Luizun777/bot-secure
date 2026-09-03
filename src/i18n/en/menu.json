@@ -1,0 +1,10 @@
+{
+  "noWorkspace": "There is no AI workspace here yet.",
+  "actionStart": "guides you with questions and sets everything up",
+  "actionHelp": "see all commands",
+  "gitDetected": "Git repository detected at {root} (branch {branch}).",
+  "workspace": "AI workspace: {root}",
+  "actionClaude": "open a protected Claude Code",
+  "actionStatus": "check that everything is fine",
+  "actionUp": "start the test database and mocks"
+}
