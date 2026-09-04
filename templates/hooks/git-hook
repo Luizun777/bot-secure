@@ -1,0 +1,44 @@
+#!/bin/sh
+# bot-secure: wrapper único de hooks git (core.hooksPath=.githooks). POSIX sh: bash 3.2, dash y sh.exe de Git for Windows.
+# Se instala como pre-commit, pre-push y post-checkout; el nombre del hook se toma de $0.
+# Resuelve node: BOT_SECURE_NODE -> .bot-secure/local.json del workspace -> command -v node -> rutas típicas.
+# Sin node: mensaje + exit 1 (fail-closed: el commit/push se rechaza).
+HOOK="${0##*/}"
+d=$(pwd)
+WS=""
+while [ -n "$d" ]; do
+  if [ -f "$d/.bot-secure/policy.json" ]; then WS="$d"; break; fi
+  case "$d" in */*) d="${d%/*}" ;; *) d="" ;; esac
+done
+if [ -z "$WS" ] && [ -f "/.bot-secure/policy.json" ]; then WS="/"; fi
+NODE=""
+if [ -n "$BOT_SECURE_NODE" ]; then
+  if [ -x "$BOT_SECURE_NODE" ]; then NODE="$BOT_SECURE_NODE"; else
+    echo "bot-secure[$HOOK]: BOT_SECURE_NODE=$BOT_SECURE_NODE no es ejecutable; operación rechazada. Arreglo: bot-secure doctor" >&2; exit 1; fi
+fi
+if [ -z "$NODE" ] && [ -n "$WS" ] && [ -f "$WS/.bot-secure/local.json" ]; then
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in
+      *'"node"'*)
+        v="${line#*\"node\"}"; v="${v#*\"}"; v="${v%%\"*}"
+        if [ -n "$v" ] && [ -x "$v" ]; then NODE="$v"; fi
+        break ;;
+    esac
+  done < "$WS/.bot-secure/local.json"
+fi
+if [ -z "$NODE" ]; then NODE=$(command -v node 2>/dev/null); fi
+if [ -z "$NODE" ]; then
+  for c in "$HOME"/.nvm/versions/node/*/bin/node "$HOME"/.fnm/node-versions/*/installation/bin/node "$HOME/.volta/bin/node" \
+           /opt/homebrew/bin/node /usr/local/bin/node /usr/bin/node "/c/Program Files/nodejs/node.exe" "$PROGRAMFILES/nodejs/node.exe"; do
+    if [ -x "$c" ]; then NODE="$c"; fi
+  done
+fi
+if [ -z "$NODE" ]; then
+  echo "bot-secure[$HOOK]: node no encontrado; operación rechazada (fail-closed). Arreglo: instala Node >= 20 y ejecuta 'bot-secure doctor'" >&2
+  exit 1
+fi
+if [ ! -f ".githooks/run.mjs" ]; then
+  echo "bot-secure[$HOOK]: falta .githooks/run.mjs; operación rechazada. Arreglo: bot-secure policy compile" >&2
+  exit 1
+fi
+exec "$NODE" ".githooks/run.mjs" "$HOOK" "$@"

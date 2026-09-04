@@ -1,0 +1,52 @@
+#!/bin/sh
+# bot-secure: lanzador de hooks de Claude Code (POSIX sh, sin dependencias externas).
+# Uso: sh ./.claude/hooks/run <evento>   (cwd = directorio del proyecto; stdin = JSON de Claude Code)
+# Resuelve node en orden: BOT_SECURE_NODE -> .bot-secure/local.json -> command -v node -> rutas típicas.
+# Si no hay node o no hay guard: mensaje + exit 2 (fail-closed: la acción se bloquea, nunca se permite en silencio).
+EVENT="$1"
+d=$(pwd)
+WS=""
+while [ -n "$d" ]; do
+  if [ -f "$d/.bot-secure/policy.json" ]; then WS="$d"; break; fi
+  case "$d" in */*) d="${d%/*}" ;; *) d="" ;; esac
+done
+if [ -z "$WS" ] && [ -f "/.bot-secure/policy.json" ]; then WS="/"; fi
+if [ -z "$WS" ]; then
+  echo "bot-secure: no encuentro el workspace (.bot-secure/policy.json) desde $(pwd). Arreglo: abre Claude Code en la raíz del workspace de IA" >&2
+  exit 2
+fi
+GUARD="$WS/.claude/hooks/guard.mjs"
+NODE=""
+if [ -n "$BOT_SECURE_NODE" ]; then
+  # Configuración explícita: si está mal, se bloquea (no se busca otro node en silencio).
+  if [ -x "$BOT_SECURE_NODE" ]; then NODE="$BOT_SECURE_NODE"; else
+    echo "bot-secure: BOT_SECURE_NODE=$BOT_SECURE_NODE no es ejecutable; la guarda bloquea. Arreglo: bot-secure doctor" >&2; exit 2; fi
+fi
+LOCAL="$WS/.bot-secure/local.json"
+if [ -z "$NODE" ] && [ -f "$LOCAL" ]; then
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in
+      *'"node"'*)
+        v="${line#*\"node\"}"; v="${v#*\"}"; v="${v%%\"*}"
+        if [ -n "$v" ] && [ -x "$v" ]; then NODE="$v"; fi
+        break ;;
+    esac
+  done < "$LOCAL"
+fi
+if [ -z "$NODE" ]; then NODE=$(command -v node 2>/dev/null); fi
+if [ -z "$NODE" ]; then
+  for c in "$HOME"/.nvm/versions/node/*/bin/node "$HOME"/.fnm/node-versions/*/installation/bin/node "$HOME/.volta/bin/node" \
+           "$HOME/.local/share/fnm/aliases/default/bin/node" /opt/homebrew/bin/node /usr/local/bin/node /usr/bin/node \
+           "/c/Program Files/nodejs/node.exe" "$PROGRAMFILES/nodejs/node.exe" "$LOCALAPPDATA/Programs/nodejs/node.exe"; do
+    if [ -x "$c" ]; then NODE="$c"; fi
+  done
+fi
+if [ -z "$NODE" ]; then
+  echo "bot-secure: node no encontrado; la guarda bloquea (fail-closed). Arreglo: instala Node >= 20 y ejecuta 'bot-secure doctor'" >&2
+  exit 2
+fi
+if [ ! -f "$GUARD" ]; then
+  echo "bot-secure: falta $GUARD; la guarda bloquea. Arreglo: bot-secure init" >&2
+  exit 2
+fi
+exec "$NODE" "$GUARD" "$EVENT"

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "project": "",
+  "profile": "sensitive",
+  "level": 1,
+  "mode": "clone",
+  "runtime": "tests",
+  "autoSwitch": false,
+  "requireOrgAccount": false,
+  "lang": "es",
+  "guard": { "mode": "block", "strictRead": false, "docsReminder": false, "promptBlockSeverity": "HIGH" },
+  "branches": { "ai": "ai-dev", "taskPrefix": "ai/", "protected": ["dev", "qa", "prd", "prod", "main", "master", "release/*"] },
+  "apps": [],
+  "db": { "engine": "postgres", "port": 5433, "database": "app_ai", "user": "app", "generic": false, "rows": 1000, "seed": 42 },
+  "network": { "allowedDomains": [], "registries": [], "prodHosts": [] },
+  "mcp": { "allowed": [] },
+  "owners": { "repoOwner": "", "infosec": "", "platform": "" },
+  "scan": { "exclude": [], "failOn": "HIGH", "maxFileSizeMB": 1 }
+}

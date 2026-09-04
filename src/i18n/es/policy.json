@@ -1,0 +1,21 @@
+{
+  "summary": "Compila policy.json a settings.json, hooks y lock.json; valida y muestra diferencias",
+  "usage": "bot-secure policy <compile [--os darwin|linux|win32] [--dry-run] [--force] | diff | validate | show>",
+  "noWorkspace": "Aquí no hay workspace de IA (.bot-secure/policy.json).",
+  "invalid": "policy.json tiene {count} error(es):",
+  "invalidLine": "  - {path}: {message}",
+  "valid": "policy.json válido ({apps} app(s), perfil {profile}, modo {mode}).",
+  "compiled": "Compilados {count} artefactos para {os} (perfil {profile}).",
+  "dryRun": "Modo --dry-run: no se escribió nada.",
+  "artifact": "  {action}  {path}",
+  "humanEdited": "  {path} fue editado a mano: se escribió {path}.new (revisa y fusiona, o usa --force).",
+  "lockWritten": "lock.json actualizado ({count} artefactos).",
+  "guardCopied": "guard.mjs copiado desde {from}.",
+  "guardShim": "No existe dist/guard.mjs: se escribió un guard de desarrollo que importa el código fuente (ejecuta npm run build para el definitivo).",
+  "win32Sensitive": "Perfil sensitive en Windows nativo: no hay sandbox; usa WSL2 para contención real.",
+  "diffTitle": "Cambios que aplicaría policy compile ({os}):",
+  "diffNone": "Sin cambios: los artefactos coinciden con la política.",
+  "diffLine": "  {state}  {path}",
+  "unknownSub": "Subcomando desconocido: {sub}.",
+  "readError": "No se pudo leer {path}: {message}"
+}

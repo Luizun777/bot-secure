@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "ask": [
+      "Bash(node -e *)",
+      "Bash(node --eval *)",
+      "Bash(python -c *)",
+      "Bash(python3 -c *)",
+      "Bash(py -c *)",
+      "Bash(powershell *)",
+      "Bash(pwsh *)"
+    ]
+  }
+}

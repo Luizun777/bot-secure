@@ -1,0 +1,21 @@
+{
+  "summary": "Compile policy.json into settings.json, hooks and lock.json; validate and diff",
+  "usage": "bot-secure policy <compile [--os darwin|linux|win32] [--dry-run] [--force] | diff | validate | show>",
+  "noWorkspace": "No AI workspace here (.bot-secure/policy.json).",
+  "invalid": "policy.json has {count} error(s):",
+  "invalidLine": "  - {path}: {message}",
+  "valid": "policy.json is valid ({apps} app(s), profile {profile}, mode {mode}).",
+  "compiled": "Compiled {count} artifacts for {os} (profile {profile}).",
+  "dryRun": "--dry-run mode: nothing was written.",
+  "artifact": "  {action}  {path}",
+  "humanEdited": "  {path} was edited by hand: wrote {path}.new (review and merge, or use --force).",
+  "lockWritten": "lock.json updated ({count} artifacts).",
+  "guardCopied": "guard.mjs copied from {from}.",
+  "guardShim": "dist/guard.mjs not found: wrote a development guard that imports the source (run npm run build for the real one).",
+  "win32Sensitive": "Profile sensitive on native Windows: no sandbox available; use WSL2 for real containment.",
+  "diffTitle": "Changes policy compile would apply ({os}):",
+  "diffNone": "No changes: artifacts match the policy.",
+  "diffLine": "  {state}  {path}",
+  "unknownSub": "Unknown subcommand: {sub}.",
+  "readError": "Could not read {path}: {message}"
+}

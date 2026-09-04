@@ -1,0 +1,12 @@
+{
+  "written": "Contexto generado: {total} archivos ({created} nuevos, {updated} actualizados, {unchanged} sin cambios, {pending} pendientes de revisión).",
+  "pendingNew": "{path} fue editado a mano; la versión nueva quedó en {path}.new. Revísala y renómbrala si aplica.",
+  "noProject": "policy.json no tiene el campo 'project' (nombre del proyecto).",
+  "badAppPath": "La app '{name}' tiene una ruta inválida ('{path}'): debe ser relativa al workspace y sin '..'.",
+  "templateMissing": "Falta la plantilla '{path}' en la instalación de bot-secure.",
+  "envSkipped": "El módulo generate-env no está disponible: se omitieron .env.ai, loaders por stack, mocks y compose.",
+  "envFailed": "El módulo generate-env falló ({message}); el contexto MD se generó igual.",
+  "lineBudget": "{path} supera el presupuesto de {max} líneas ({lines}). Mueve contenido a docs/ o recorta el mapa de apps.",
+  "appMapFallback": "El módulo workspace no está disponible: el mapa de apps se generó desde policy.apps.",
+  "dryRun": "Modo simulación: {total} archivos se generarían (ninguno escrito)."
+}

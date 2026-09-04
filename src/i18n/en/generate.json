@@ -1,0 +1,12 @@
+{
+  "written": "Context generated: {total} files ({created} new, {updated} updated, {unchanged} unchanged, {pending} pending review).",
+  "pendingNew": "{path} was edited by hand; the new version is at {path}.new. Review and rename it if appropriate.",
+  "noProject": "policy.json has no 'project' field (project name).",
+  "badAppPath": "App '{name}' has an invalid path ('{path}'): it must be relative to the workspace and contain no '..'.",
+  "templateMissing": "Template '{path}' is missing from the bot-secure installation.",
+  "envSkipped": "The generate-env module is not available: .env.ai, stack loaders, mocks and compose were skipped.",
+  "envFailed": "The generate-env module failed ({message}); the MD context was generated anyway.",
+  "lineBudget": "{path} exceeds the {max}-line budget ({lines}). Move content to docs/ or trim the app map.",
+  "appMapFallback": "The workspace module is not available: the app map was built from policy.apps.",
+  "dryRun": "Dry run: {total} files would be generated (none written)."
+}
