@@ -13,7 +13,7 @@ Lo que **no** hace: no garantiza que no queden secretos (ningún escáner lo gar
 ## Empieza en 3 comandos
 
 ```bash
-npm i -g github:tu-org/bot-secure   # 1. instala (necesitas Node 20 o superior)
+npm i -g github:Luizun777/bot-secure   # 1. instala (necesitas Node 20 o superior)
 bot-secure start                    # 2. te guía con preguntas y prepara todo
 bot-secure claude                   # 3. abre Claude Code ya protegido
 ```
@@ -156,5 +156,10 @@ npm test           # pruebas unitarias
 npm run test:e2e   # pruebas de extremo a extremo
 npm run build      # genera dist/
 ```
+
+Nota: escanear **este** repositorio con `bot-secure scan` reporta cientos de hallazgos.
+Es lo esperado: `test/fixtures/` contiene secretos y datos mexicanos **inventados a propósito**
+para probar el detector, y el propio código menciona patrones de secretos en comentarios y
+expresiones regulares. No hay ninguna credencial real, ni en el árbol de archivos ni en el historial.
 
 Licencia MIT.

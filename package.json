@@ -36,5 +36,14 @@
     "scanner",
     "pii",
     "mexico"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luizun777/bot-secure.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Luizun777/bot-secure/issues"
+  },
+  "homepage": "https://github.com/Luizun777/bot-secure#readme",
+  "author": "Luizun777"
 }

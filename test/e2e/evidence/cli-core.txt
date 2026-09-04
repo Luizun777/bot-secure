@@ -1,5 +1,5 @@
 # Evidencia real: test/e2e/cli-core-init.test.mjs
-# Generado: 2026-09-04T08:05:11.415Z
+# Generado: 2026-09-04T15:29:52.924Z
 # node v26.7.0 · darwin
 
 ### bot-secure init --yes  (exit 0)
