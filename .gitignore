@@ -13,3 +13,9 @@ CLAUDE.local.md
 # temporales de pruebas
 test/e2e/tmp/
 # el bundle se genera con npm run build
+
+# Valores de prueba con forma de credencial real: se generan en tiempo de prueba
+# (test/fixtures/generar-riesgosos.mjs) para no guardar cadenas con esa forma en git.
+test/fixtures/secrets-falsos/ia-mail.txt
+test/fixtures/secrets-falsos/slack.txt
+test/fixtures/secrets-falsos/twilio-sendgrid.txt

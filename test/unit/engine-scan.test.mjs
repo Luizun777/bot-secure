@@ -1,6 +1,7 @@
 // Escaneo de extremo a extremo sobre los fixtures: cobertura, falsos positivos, UTF-16, ReDoS,
 // supresiones inline por modo, ausencia de valores en el reporte y rendimiento.
 import { strict as assert } from 'node:assert';
+import { generarRiesgosos } from '../fixtures/generar-riesgosos.mjs';
 import { test } from 'node:test';
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -41,6 +42,8 @@ const ESPERADO = {
 
 let cacheSecretos = null;
 async function reporteSecretos() {
+  // Los valores con forma de credencial real no viven en el repo: se generan aquí.
+  generarRiesgosos();
   if (!cacheSecretos) cacheSecretos = await scanPaths({ root: join(FIXTURES, 'secrets-falsos'), hmacKey: KEY });
   return cacheSecretos;
 }
