@@ -37,35 +37,13 @@ function targetOs(ctx) {
  * desarrollo que importa el código fuente por ruta absoluta.
  * @returns {{action:'bundle'|'shim', from:string, sha256:string}}
  */
-export function installGuard(root, { dryRun = false } = {}) {
-  const dist = join(REPO, 'dist', 'guard.mjs');
-  const dest = join(root, GUARD_REL);
-  if (existsSync(dist)) {
-    const content = readFileSync(dist, 'utf8');
-    if (!dryRun) writeText(dest, content);
-    return { action: 'bundle', from: toPosix(relative(REPO, dist)), sha256: sha256(content) };
-  }
-  const src = pathToFileURL(join(REPO, 'src', 'guard', 'guard.mjs')).href;
-  const content = [
-    '#!/usr/bin/env node',
-    '// Generado por bot-secure (modo desarrollo): importa la guarda desde el código fuente.',
-    "// El definitivo (autocontenido) lo produce `npm run build` en dist/guard.mjs.",
-    "import { readFileSync } from 'node:fs';",
-    "import { pathToFileURL } from 'node:url';",
-    `import { main } from ${JSON.stringify(src)};`,
-    'export { main };',
-    '// Solo se autoejecuta si node arrancó ESTE archivo (.githooks/run.mjs lo importa y llama a main()).',
-    'if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {',
-    "  const event = process.argv[2] ?? 'pre-tool';",
-    "  let stdin = '';",
-    "  try { stdin = readFileSync(0, 'utf8'); } catch { stdin = ''; }",
-    '  main(event, stdin).then((c) => process.exit(typeof c === "number" ? c : 2), () => process.exit(2));',
-    '}',
-    '',
-  ].join('\n');
-  if (!dryRun) writeText(dest, content);
-  return { action: 'shim', from: toPosix(relative(REPO, join('src', 'guard', 'guard.mjs'))), sha256: sha256(content) };
-}
+// La instalación de la guarda vive en un solo sitio (src/cli/init.mjs): antes había una
+// copia aquí que calculaba la raíz del repo con join(HERE,'..','..'), y desde el binario
+// (donde HERE es dist/) apuntaba un nivel más arriba. Resultado: 'policy compile' sustituía
+// la guarda buena por un puente roto que ni siquiera cargaba, y al fallar salía con código 1,
+// que Claude Code interpreta como "permitido". Es decir, desactivaba TODAS las protecciones.
+import { installGuard } from './init.mjs';
+export { installGuard };
 
 function knownHashes(root) {
   const lock = readLock(root);

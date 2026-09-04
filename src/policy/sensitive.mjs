@@ -1,6 +1,7 @@
 // Catálogo de rutas sensibles compartido por compile (globs de settings.json / sandbox) y el guard (realpath).
+import { realpathSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { relative, isAbsolute, sep } from 'node:path';
+import { relative, isAbsolute, sep, join, dirname, basename } from 'node:path';
 
 /** Nombres exactos de archivos de entorno que se niegan (lista explícita: .env.ai y .env.example se permiten). */
 export const ENV_FILES = [
@@ -86,15 +87,36 @@ export function classifyPath(abs, { ws, home = homedir() } = {}) {
 
 /** ¿La ruta absoluta cae en un directorio protegido de escritura (guardas)? */
 export function isGuardPath(abs, ws) {
-  const rel = toPosix(relative(ws, abs));
-  if (!rel || rel.startsWith('..') || isAbsolute(rel)) return /(^|\/)\.git\/hooks(\/|$)/.test(toPosix(abs));
+  // Se usa la misma normalización que isInside: el analizador entrega rutas REALES
+  // (/private/tmp/…) y la raíz llega con el enlace (/tmp/…), así que comparar tal cual
+  // hacía que esta comprobación NUNCA acertara y se pudiera sobrescribir la propia guarda.
+  const rel = relativoALaRaiz(abs, ws);
+  if (rel === null) return /(^|\/)\.git\/hooks(\/|$)/.test(toPosix(abs));
   return /(^|\/)(\.claude|\.githooks|\.bot-secure)(\/|$)/.test(rel) || /(^|\/)\.git\/(hooks|config)(\/|$)/.test(rel) || /(^|\/)\.env\.ai$/.test(rel);
+}
+
+/**
+ * Ruta relativa (posix) de `abs` respecto de `root`, resolviendo enlaces simbólicos en ambos.
+ * Devuelve null si queda fuera. Es la base de isInside e isGuardPath: sin ella, en macOS
+ * (/tmp → /private/tmp) las comprobaciones de contención fallaban en silencio.
+ */
+export function relativoALaRaiz(abs, root) {
+  const raices = [root];
+  try { const rr = realpathSync(root); if (rr !== root) raices.push(rr); } catch { /* raíz inexistente */ }
+  let destino;
+  try { destino = realpathSync(abs); } catch {
+    try { destino = join(realpathSync(dirname(abs)), basename(abs)); } catch { destino = abs; }
+  }
+  for (const r of raices) {
+    const rel = toPosix(relative(r, destino));
+    if (rel === '' || (!rel.startsWith('..') && !isAbsolute(rel))) return rel;
+  }
+  return null;
 }
 
 /** ¿abs está dentro de root (o es root)? Ambas absolutas. */
 export function isInside(abs, root) {
-  const rel = relative(root, abs);
-  return rel === '' || (!rel.startsWith('..') && !isAbsolute(rel));
+  return relativoALaRaiz(abs, root) !== null;
 }
 
 /** Globs de deny para settings.json (Read/Grep/Glob) relativos al proyecto. */

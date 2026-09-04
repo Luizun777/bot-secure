@@ -28,6 +28,18 @@ export const INTERPRETERS = new Set(['node', 'nodejs', 'python', 'python3', 'py'
 export const SHELLS = new Set(['sh', 'bash', 'zsh', 'dash', 'ksh', 'ash', 'busybox']);
 
 const IP4 = /^\d{1,3}(\.\d{1,3}){3}$/;
+
+/** Rutas y patrones que se le pasan a `find`, para dárselas al comando de -exec. */
+function rutasDeFind(args, cwd, home) {
+  const out = [];
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i];
+    if (/^-(name|iname|path|ipath|wholename)$/.test(a) && args[i + 1]) { out.push(args[i + 1]); i++; continue; }
+    if (a.startsWith('-')) { if (/^-(maxdepth|mindepth|type|size|newer|user|group|perm)$/.test(a)) i++; continue; }
+    if (i === 0 || !args[i - 1].startsWith('-')) out.push(a);
+  }
+  return out.join(' ');
+}
 const ENV_DUMP_CODE = /process\.env|os\.environ|ENV\.to_h|\$ENV\b|%ENV\b|getenv\s*\(\s*\)|Get-ChildItem\s+env:/i;
 const NET_CODE = /\bfetch\s*\(|https?\.request|urllib|http\.client|requests\.(get|post)|net\.(connect|Socket)|XMLHttpRequest|WebSocket|LWP|Net::HTTP/i;
 
@@ -243,7 +255,9 @@ export function classify(segment, { cwd = process.cwd(), home = homedir(), _dept
 
   // `env VAR=1 cmd` / `nohup cmd` / `sudo cmd`: se reclasifica el comando real.
   if ((bin === 'env' || bin === 'nohup' || bin === 'sudo' || bin === 'time' || bin === 'nice') && args.length) {
-    const rest = args.filter((a) => !ASSIGN_RE.test(a) && !isFlag(a));
+    // Se descartan también los argumentos numéricos (`nice -n 10 cat x`, `timeout 5 cat x`):
+    // si no, el número se toma por el comando y el lector queda escondido.
+    const rest = args.filter((a) => !ASSIGN_RE.test(a) && !isFlag(a) && !/^[0-9]+(\.[0-9]+)?[smhd]?$/.test(a));
     if (rest.length) {
       const inner = classify({ ...segment, argv: rest, redirects: [] }, { cwd, home });
       for (const p of inner.reads) reads.add(p);
@@ -258,25 +272,57 @@ export function classify(segment, { cwd = process.cwd(), home = homedir(), _dept
     }
   }
 
-  // `sh -c "…"`: se analiza el comando anidado y se fusiona (profundidad limitada por _depth).
-  if (SHELLS.has(bin) && (ctxDepth ?? 0) < 3) {
-    const ci = args.findIndex((a) => a === '-c' || a === '-lc' || a === '-ic');
-    const inner = ci >= 0 ? args[ci + 1] : null;
-    if (inner) {
-      const nested = parseBash(inner);
-      for (const seg of nested.segments) {
-        const r = classify(seg, { cwd, home, _depth: (ctxDepth ?? 0) + 1 });
-        for (const p of r.reads) reads.add(p);
-        for (const p of r.writes) writes.add(p);
-        for (const h of r.network.hosts) hosts.add(h);
-        networkBinary = networkBinary ?? r.network.binary;
-        resolveOverride = resolveOverride || r.network.resolveOverride;
-        unresolved = unresolved || r.network.unresolved;
-        envDump = envDump || r.envDump;
-        if (r.git && !nestedGit) nestedGit = r.git;
-      }
-      if (nested.unanalyzable) nestedUnanalyzable = nested.unanalyzable;
+  /**
+   * Analiza un comando ESCONDIDO dentro de otro y fusiona su clasificación.
+   * Sin esto, envoltorios como `eval`, `find -exec` o `xargs` colaban un lector
+   * (`find . -name .env -exec cat {} \;` leía el .env sin que nadie lo viera).
+   */
+  const fusionarAnidado = (texto) => {
+    if (!texto || (ctxDepth ?? 0) >= 3) return;
+    const nested = parseBash(texto);
+    for (const seg of nested.segments) {
+      const r = classify(seg, { cwd, home, _depth: (ctxDepth ?? 0) + 1 });
+      for (const p of r.reads) reads.add(p);
+      for (const p of r.writes) writes.add(p);
+      for (const h of r.network.hosts) hosts.add(h);
+      networkBinary = networkBinary ?? r.network.binary;
+      resolveOverride = resolveOverride || r.network.resolveOverride;
+      unresolved = unresolved || r.network.unresolved;
+      envDump = envDump || r.envDump;
+      if (r.git && !nestedGit) nestedGit = r.git;
     }
+    if (nested.unanalyzable) nestedUnanalyzable = nested.unanalyzable;
+  };
+
+  // `sh -c "…"`: se analiza el comando anidado y se fusiona (profundidad limitada por _depth).
+  if (SHELLS.has(bin)) {
+    const ci = args.findIndex((a) => a === '-c' || a === '-lc' || a === '-ic');
+    if (ci >= 0) fusionarAnidado(args[ci + 1]);
+  }
+
+  // `eval "…"`: el resto de la línea ES un comando.
+  if (bin === 'eval' || bin === 'command' || bin === 'exec' || bin === 'nohup' || bin === 'time' || bin === 'timeout' || bin === 'nice' || bin === 'stdbuf') {
+    // `timeout 5 cat x` y `nice -n 10 cat x`: hay que saltarse la duración o la prioridad,
+    // si no el número se toma por el comando y el lector queda escondido.
+    const limpio = args.filter((a) => !isFlag(a) && !/^[0-9]+(\.[0-9]+)?[smhd]?$/.test(a));
+    const resto = limpio.join(' ');
+    if (resto) fusionarAnidado(resto);
+  }
+
+  // `find … -exec <comando> {} ;` y `-execdir`, `-ok`, `-okdir`: el comando va tras la bandera.
+  if (bin === 'find' || bin === 'fd' || bin === 'fdfind') {
+    for (let i = 0; i < args.length; i++) {
+      if (!/^-(exec|execdir|ok|okdir|x)$/.test(args[i])) continue;
+      const trozo = [];
+      for (let j = i + 1; j < args.length && !/^(;|\;|\+)$/.test(args[j]); j++) trozo.push(args[j] === '{}' ? '' : args[j]);
+      if (trozo.length) fusionarAnidado(trozo.join(' ') + ' ' + rutasDeFind(args, cwd, home));
+    }
+  }
+
+  // `xargs <comando>`: el comando va como argumentos de xargs.
+  if (bin === 'xargs') {
+    const resto = args.filter((a, i) => !isFlag(a) && !isFlag(args[i - 1] ?? '')).join(' ');
+    if (resto) fusionarAnidado(resto);
   }
 
   // Volcado de entorno: `env`/`printenv`/`set` sin argumentos, export -p, declare -x, Get-ChildItem env:
@@ -315,14 +361,23 @@ export function classify(segment, { cwd = process.cwd(), home = homedir(), _dept
 
   // Lecturas.
   if (READ_BINS.has(bin)) {
+    // El primer argumento de grep/sed/awk… es el PATRÓN, no una ruta. Antes se detectaba con
+    // `!reads.size`, pero como saltarse el patrón no añade lecturas, el siguiente argumento
+    // (la ruta) también se saltaba: `grep -r AWS carpeta` no veía nada y filtraba contenido.
+    let patronConsumido = false;
     for (const a of args) {
       if (isFlag(a) || a === '') continue;
       if (INTERPRETERS.has(bin) && interpreterCode !== null && a === interpreterCode) continue;
       if (/^[A-Za-z]+=/.test(a)) continue;
       if (bin === 'openssl' && /^(x509|rsa|enc|pkcs12|genrsa|s_client|dgst|base64)$/.test(a)) continue;
       if (/^(if|of|bs|count|skip|seek)=/.test(a)) { const v = a.split('=')[1]; if (v) (a.startsWith('of=') ? writes : reads).add(abs(v)); continue; }
-      if (/^(sed|awk|gawk|mawk|perl|grep|egrep|fgrep|rg|jq|yq|tr|cut)$/.test(bin) && !reads.size && !/[\\/.]/.test(a)) continue; // primer arg = patrón
+      if (/^(sed|awk|gawk|mawk|perl|grep|egrep|fgrep|rg|jq|yq|tr|cut)$/.test(bin) && !patronConsumido && !/[\\/.]/.test(a)) { patronConsumido = true; continue; } // primer arg = patrón
       reads.add(abs(a));
+    }
+    // `sed -i`, `perl -i`, `ruby -i` EDITAN EN SITIO: sus rutas son escrituras, no lecturas.
+    // Sin esto, `sed -i "" s/a/b/ .githooks/pre-commit` desarmaba un hook sin que nadie lo viera.
+    if (/^(sed|gsed|perl|ruby)$/.test(bin) && args.some((a) => /^-[a-zA-Z]*i/.test(a) || a === '--in-place' || a.startsWith('--in-place='))) {
+      for (const r of reads) writes.add(r);
     }
   }
   // Escrituras (destino = último argumento no-flag para cp/mv/install/ln).

@@ -77,11 +77,34 @@ export function installGuard(root, { dryRun = false } = {}) {
     return { action: 'bundle', from: toPosix(bundle), sha256: sha256(content) };
   }
   const entry = join(HERE, '..', 'guard', 'entry.mjs');
+  // FALLA CERRADO: si la guarda no se puede cargar (repo movido, sin build), este puente
+  // debe SALIR CON 2. Con `export * from` un fallo de carga daba código 1, y Claude Code
+  // trata cualquier código distinto de 2 como error no bloqueante: dejaba pasar todo.
   const content = [
     '#!/usr/bin/env node',
     '// Generado por bot-secure (modo desarrollo): no hay dist/guard.mjs.',
     '// El definitivo (autocontenido) lo produce `npm run build`.',
-    `export * from ${JSON.stringify(pathToFileURL(entry).href)};`,
+    "import { readFileSync, realpathSync } from 'node:fs';",
+    "import { resolve } from 'node:path';",
+    "import { fileURLToPath } from 'node:url';",
+    'let cargado = null;',
+    'try {',
+    `  cargado = await import(${JSON.stringify(pathToFileURL(entry).href)});`,
+    '} catch (e) {',
+    `  process.stderr.write('bot-secure: no puedo cargar la guarda (' + (e?.message ?? e) + '); la guarda bloquea. Arreglo: npm run build && bot-secure init\\n');`,
+    '  process.exit(2);',
+    '}',
+    "if (typeof cargado?.main !== 'function') { process.stderr.write('bot-secure: guarda inválida; la guarda bloquea. Arreglo: npm run build && bot-secure init\\n'); process.exit(2); }",
+    'export const main = cargado.main;',
+    'function esProcesoPrincipal() {',
+    '  if (!process.argv[1]) return false;',
+    '  try { return realpathSync(fileURLToPath(import.meta.url)) === realpathSync(resolve(process.argv[1])); } catch { return false; }',
+    '}',
+    'if (esProcesoPrincipal()) {',
+    "  const evento = process.argv[2] ?? 'pre-tool';",
+    "  let entrada = ''; try { entrada = readFileSync(0, 'utf8'); } catch { entrada = ''; }",
+    '  main(evento, entrada).then((c) => process.exit(typeof c === "number" ? c : 2), () => process.exit(2));',
+    '}',
     '',
   ].join('\n');
   if (!dryRun) writeText(dest, content);
