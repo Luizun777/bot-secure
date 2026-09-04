@@ -1,23 +1,13 @@
 // Helpers del módulo generate-context: vista segura (solo campos permitidos de policy/apps),
 // carga y render de plantillas, y utilidades de texto. Nada de aquí copia valores de .env.
 import { existsSync, readFileSync } from 'node:fs';
+import { readAsset } from '../assets/index.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { render } from '../lib/template.mjs';
 import { BotSecureError } from '../lib/errors.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-/**
- * Raíz de las plantillas. Desde el código fuente es `<repo>/templates` (HERE = src/generate);
- * desde el bundle de esbuild `import.meta.url` apunta a `dist/`, así que también se prueba `dist/../templates`.
- * Las plantillas viajan en el paquete npm (`files: ["templates", …]`), nunca se leen del proyecto destino.
- */
-export const TEMPLATES_DIR = [
-  path.join(HERE, '..', '..', 'templates'), // src/generate/../../templates
-  path.join(HERE, '..', 'templates'), // dist/../templates (bundle)
-  path.join(HERE, 'templates'),
-].find((p) => existsSync(p)) ?? path.join(HERE, '..', '..', 'templates');
-
 /** @typedef {{ path: string, content: string, mode?: string }} Artifact */
 
 /** Convierte una ruta relativa a separadores posix (para escribir dentro de los .md). */
@@ -40,11 +30,10 @@ export function lineCount(text) { return String(text).trimEnd().split('\n').leng
 
 /** Lee una plantilla: kind 'md' → templates/md/<lang>/<name> (cae a es); kind 'claude' → templates/claude/<name>. */
 export function loadTemplate(kind, name, lang = 'es') {
-  const candidates = kind === 'md'
-    ? [path.join(TEMPLATES_DIR, 'md', lang, name), path.join(TEMPLATES_DIR, 'md', 'es', name)]
-    : [path.join(TEMPLATES_DIR, 'claude', name)];
-  for (const c of candidates) if (existsSync(c)) return readFileSync(c, 'utf8');
-  throw new BotSecureError('generate.templateMissing', { vars: { path: toPosix(path.relative(TEMPLATES_DIR, candidates[0])) }, fix: 'bot-secure doctor' });
+  // Del disco en el repo, de lo incrustado desde dist/ (ver src/assets).
+  const candidates = kind === 'md' ? [`md/${lang}/${name}`, `md/es/${name}`] : [`claude/${name}`];
+  for (const c of candidates) { const t = readAsset('templates', c); if (t != null) return t; }
+  throw new BotSecureError('generate.templateMissing', { vars: { path: candidates[0] }, fix: 'bot-secure doctor' });
 }
 
 /** Renderiza una plantilla con la vista dada. */

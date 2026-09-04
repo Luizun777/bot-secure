@@ -1,13 +1,18 @@
 // Compila policy.json → artefactos: .claude/settings.json (raíz y por app), .claude/hooks/run(.ps1), .githooks/*.
 // Sin rutas absolutas en ningún artefacto (portabilidad + lock.json estable entre máquinas).
 import { existsSync, readFileSync } from 'node:fs';
+import { readAsset } from '../assets/index.mjs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { HOME_DENY, WS_DENY_WRITE, readDenyGlobs, sandboxDenyRead } from './sensitive.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const TPL = join(HERE, '..', '..', 'templates');
-const tpl = (...p) => readFileSync(join(TPL, ...p), 'utf8');
+// Las plantillas se sirven del disco en el repo y de lo incrustado desde dist/.
+const tpl = (...p) => {
+  const t = readAsset('templates', p.join('/'));
+  if (t == null) throw new Error(`plantilla ausente: ${p.join('/')}`);
+  return t;
+};
 const tplJson = (...p) => JSON.parse(tpl(...p));
 
 /** @typedef {{path:string, content:string, mode?:'0755'}} Artifact */

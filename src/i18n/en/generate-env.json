@@ -1,0 +1,20 @@
+{
+  "emptyFieldRule": "**Empty-field rule ({stack}).** On `ai-dev`, leave the sensitive fields of {files} empty. With `AI_ENV=1`, {loader} fills them from `.env.ai`; without `AI_ENV`, an empty field fails startup naming the field.",
+  "generated": "AI environment generated: {count} files ({apps} apps, strategies: {strategies}).",
+  "noWorkspace": "Not inside an AI workspace (missing .bot-secure/policy.json).",
+  "noPolicy": "The workspace has no policy: .bot-secure/policy.json is missing.",
+  "unknownSub": "Unknown mocks subcommand: '{sub}'. Available: {subs}.",
+  "noRuntime": "Neither Docker nor Podman found: mocks cannot start. The database and the IdP stay down.",
+  "noCompose": "Missing {file}. Generate it before starting the mocks.",
+  "upDone": "Mocks are up ({services}). Everything listens on 127.0.0.1 only.",
+  "downDone": "Mocks stopped ({services}).",
+  "statusRunning": "{service}: up on 127.0.0.1:{port}",
+  "statusStopped": "{service}: down",
+  "idpUp": "Mock IdP is up: issuer {issuer} · JWKS {jwks}",
+  "keysDone": "Throwaway keys generated in {dir} ({count} files).",
+  "keysNoOpenssl": "No `openssl` in PATH: RSA/EC keys were generated but not the PKCS#12 bundle.",
+  "keysExisting": "Keys already existed in {dir}: they were regenerated.",
+  "dryRun": "Dry run: nothing was written or started.",
+  "fakeNotSecret": "Values in `.env.ai` are fake by design: there is nothing to rotate if they leak.",
+  "verifyLeak": "{path}: variable {name} is not an AI-environment value. Check it before committing."
+}

@@ -3,12 +3,10 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { render } from '../lib/template.mjs';
 import { makeT } from '../lib/i18n.mjs';
 import { MOCK_PORTS, fakeComment, fakeFor, inferKind, isFake, normName, slug } from './fakes.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-export const TEMPLATES_DIR = join(HERE, '..', '..', 'templates');
 
 /** @typedef {{name:string, value:string, kind:string, comment?:string, section:string}} AiVar */
 /** @typedef {{path:string, content:string, mode?:string}} Artifact */
@@ -18,8 +16,6 @@ const FRONT_PREFIX = { vite: 'VITE_', cra: 'REACT_APP_', vue: 'VUE_APP_', next: 
 const DB_DEFAULT_PORT = { postgres: 5433, mysql: 3307, mongo: 27018, redis: 6380, mssql: 1434, oracle: 1522 };
 
 // ---------- helpers compartidos ----------
-/** Renderiza templates/<rel> con el contexto dado. */
-export function tpl(rel, ctx = {}) { return render(readFileSync(join(TEMPLATES_DIR, ...rel.split('/')), 'utf8'), ctx); }
 /** Ruta relativa a la raíz del workspace para un archivo dentro de la app. */
 export function appJoin(app, ...segments) { const base = app?.path && app.path !== '.' ? app.path : ''; return base ? join(base, ...segments) : join(...segments); }
 /** Prefijo público del framework de front ('' si no inlina variables). */
@@ -201,7 +197,12 @@ const SECTION_TITLES = { core: 'Bandera del ambiente de IA', db: 'Base de datos 
 
 function quote(v) { const s = String(v ?? ''); return /[\s#"'$`\\]/.test(s) ? `"${s.replace(/(["\\$`])/g, '\\$1')}"` : s; }
 
-/** Serializa AiVar[] a texto .env.ai (comentario del fake en la línea anterior: compatible con node --env-file, Vite, dotenv). */
+/**
+ * Serializa AiVar[] a texto .env.ai.
+ * El marcador `# bot-secure:fake <tipo>` va en la MISMA línea: el anti-falsos-positivos del motor
+ * mira el texto de la línea del hallazgo, así que en la línea anterior no suprimiría nada.
+ * `node --env-file`, dotenv y Vite descartan el comentario final de una línea sin comillas.
+ */
 export function renderEnvAi(vars, { title = '.env.ai' } = {}) {
   const lines = [
     `# ${title} — valores del ambiente de IA generados por bot-secure. Versionado. SIN secretos reales.`,
@@ -212,8 +213,9 @@ export function renderEnvAi(vars, { title = '.env.ai' } = {}) {
   let section = null;
   for (const v of vars) {
     if (v.section !== section) { section = v.section; lines.push('', `# --- ${SECTION_TITLES[section] || section} ---`); }
-    if (v.comment) lines.push(v.comment);
-    lines.push(`${v.name}=${quote(v.value)}`);
+    const value = quote(v.value);
+    // Solo se comenta al final si el valor no lleva comillas (ahí el comentario sería parte del valor).
+    lines.push(`${v.name}=${value}${v.comment && value === String(v.value ?? '') ? `   ${v.comment}` : ''}`);
   }
   return lines.join('\n') + '\n';
 }
@@ -241,9 +243,26 @@ export async function buildEnvAi(appOrRoot, policy, opts = {}) {
   return renderEnvAi(vars, { title: app ? `${appJoin(app, '.env.ai')}` : '.env.ai (workspace)' });
 }
 
-/** ¿Todos los valores del .env.ai son placeholders/fakes/locales? (auto-verificación; nunca secretos reales) */
+/**
+ * ¿Todos los valores del .env.ai son placeholders, fakes o locales?
+ * Auto-verificación del generador: si esto falla, un valor real se coló en un archivo versionado.
+ */
 export function envAiLooksSafe(text) {
-  return parseEnv(text).every((v) => !v.value || isFake(v.value) || inferKind(v.name) === 'plain' || /^(\d+|true|false|1|0)$/.test(v.value) || /^https?:\/\/localhost/.test(v.value));
+  return parseEnv(text).every((v) => valueLooksSafe(v.name, v.value));
+}
+
+/** Un valor concreto: vacío, fake conocido, bandera, apunta al loopback o identificador corto. */
+export function valueLooksSafe(name, value) {
+  const v = String(value ?? '').trim();
+  if (!v) return true;
+  if (isFake(v)) return true;
+  if (inferKind(name) === 'plain') return true;
+  if (/^(\d+|true|false)$/i.test(v)) return true;
+  // Cualquier esquema (http, jdbc, postgres, redis…) mientras el destino sea la máquina local.
+  if (/(^|[/@])(localhost|127\.0\.0\.1|\[::1\])([:/]|$)/.test(v)) return true;
+  // Identificador corto en minúsculas (app, app_ai, ai-tienda-api): sin entropía, no es un secreto.
+  if (/^[a-z][a-z0-9_.-]{0,30}$/.test(v)) return true;
+  return false;
 }
 
 // ---------- regla del campo vacío ----------

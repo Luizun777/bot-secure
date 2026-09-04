@@ -1,0 +1,20 @@
+{
+  "emptyFieldRule": "**Regla del campo vacío ({stack}).** En `ai-dev` deja vacíos los campos sensibles de {files}. Con `AI_ENV=1`, {loader} los rellena con los valores de `.env.ai`; sin `AI_ENV`, un campo vacío hace fallar el arranque nombrando el campo.",
+  "generated": "Ambiente de IA generado: {count} archivos ({apps} apps, estrategias: {strategies}).",
+  "noWorkspace": "No estoy dentro de un workspace de IA (falta .bot-secure/policy.json).",
+  "noPolicy": "El workspace no tiene política: falta .bot-secure/policy.json.",
+  "unknownSub": "Subcomando desconocido de mocks: '{sub}'. Disponibles: {subs}.",
+  "noRuntime": "No hay Docker ni Podman: los mocks no se pueden levantar. La BD y el IdP quedan sin arrancar.",
+  "noCompose": "Falta {file}. Genéralo antes de levantar los mocks.",
+  "upDone": "Mocks arriba ({services}). Todo escucha solo en 127.0.0.1.",
+  "downDone": "Mocks apagados ({services}).",
+  "statusRunning": "{service}: arriba en 127.0.0.1:{port}",
+  "statusStopped": "{service}: abajo",
+  "idpUp": "IdP simulado arriba: emisor {issuer} · JWKS {jwks}",
+  "keysDone": "Llaves descartables generadas en {dir} ({count} archivos).",
+  "keysNoOpenssl": "No hay `openssl` en el PATH: se generaron las llaves RSA/EC pero no el PKCS#12.",
+  "keysExisting": "Ya había llaves en {dir}: se regeneraron.",
+  "dryRun": "Modo simulación: no se escribió ni se levantó nada.",
+  "fakeNotSecret": "Los valores de `.env.ai` son falsos por diseño: no hay nada que rotar si se filtran.",
+  "verifyLeak": "{path}: la variable {name} no es un valor del ambiente de IA. Revísala antes de commitear."
+}

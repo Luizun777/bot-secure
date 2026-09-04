@@ -1,5 +1,6 @@
 // Anti-falsos-positivos: placeholders, referencias, cifrados, forma del valor, stopwords, supresiones inline.
 import { readFileSync, existsSync } from 'node:fs';
+import { readAsset } from '../assets/index.mjs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -26,6 +27,14 @@ const ENCRYPTED_RE = /^(?:ENC\[|\$ANSIBLE_VAULT;|AQICAHh|\{cipher\}|vault:v\d+:|
 const FAKE_FORM_RE = /AIPLACEHOLDER|EXAMPLE|PLACEHOLDER|FAKE|DUMMY|CHANGEME|XXXX|__AI_/i;
 const INLINE_ALLOW_RE = /gitleaks:allow|pragma:\s*allowlist\s+secret|bot-secure:allow|trufflehog:ignore|nosecret|secretlint-disable/i;
 const FAKE_MARKER_RE = /bot-secure:fake/i;
+// Archivos que POR DISEÑO llevan valores falsos generados por el bot (.env.ai y su ejemplo).
+// Solo en ellos la marca "# bot-secure:fake" es autoritativa fuera del modo scan: así el
+// hook de pre-commit no bloquea un .env.ai legítimo, y a la vez añadir la marca a un
+// secreto real en cualquier otro archivo NO sirve para saltarse el escáner.
+const FAKE_CARRIER_RE = /(^|\/)\.env\.(ai|example)$/;
+/** ¿Ese archivo es un portador legítimo de valores falsos? */
+export function isFakeCarrier(path) { return FAKE_CARRIER_RE.test(String(path ?? '').split(sepNorm).join('/')); }
+const sepNorm = '\\';
 
 export function isPlaceholder(v) { return UNIVERSAL_PLACEHOLDER_RE.test(String(v ?? '').trim()); }
 export function isReference(v) { const s = String(v ?? '').trim(); return REFERENCE_RE.test(s) || CODE_RE.test(s); }
@@ -44,9 +53,9 @@ export function loadStopwords() {
   if (STOPWORDS) return STOPWORDS;
   const set = new Set();
   for (const f of ['stopwords.en.txt', 'stopwords.es.txt']) {
-    const p = join(HERE, 'rules', f);
-    if (!existsSync(p)) continue;
-    for (const raw of readFileSync(p, 'utf8').split(/\r?\n/)) { const w = raw.trim().toLowerCase(); if (w && !w.startsWith('#')) set.add(w); }
+    const texto = readAsset('rules', f);
+    if (!texto) continue;
+    for (const raw of texto.split(/\r?\n/)) { const w = raw.trim().toLowerCase(); if (w && !w.startsWith('#')) set.add(w); }
   }
   STOPWORDS = set; return set;
 }
@@ -67,16 +76,17 @@ export function isStopword(v) {
  * @param {string} [p.lineText]
  * @param {'scan'|'guard'|'ci'|'pre-commit'} p.mode
  * @param {object} [p.rule] regla (allowlist)
+ * @param {string} [p.path] ruta del archivo (para reconocer .env.ai como portador de valores falsos)
  * @returns {{drop: boolean, reason?: string, degrade?: number}}
  */
-export function evaluate({ value, family, strongKey = false, lineText = '', mode = 'scan', rule = null }) {
+export function evaluate({ value, family, strongKey = false, lineText = '', mode = 'scan', rule = null, path = '' }) {
   const v = String(value ?? '').trim();
   const shapeFamily = family !== 'prefixed' && family !== 'files' && family !== 'encrypted';
   if (!v || (v.length < 4 && family !== 'files')) return { drop: true, reason: 'short' };
   if (isPlaceholder(v)) return { drop: true, reason: 'placeholder' };
   if (shapeFamily && isReference(v)) return { drop: true, reason: 'reference' };
   if (family === 'connection' && REFERENCE_RE.test(v)) return { drop: true, reason: 'reference' };
-  if (hasFakeMarker(lineText) && (mode === 'scan' || looksFake(v))) return { drop: true, reason: 'fake-marker' };
+  if (hasFakeMarker(lineText) && (mode === 'scan' || looksFake(v) || isFakeCarrier(path))) return { drop: true, reason: 'fake-marker' };
   if (mode === 'scan' && hasInlineAllow(lineText)) return { drop: true, reason: 'inline-allow' };
   if (family !== 'encrypted' && isEncrypted(v)) return { drop: true, reason: 'encrypted' };
   if (rule?.allowlist?.regexes?.length) {

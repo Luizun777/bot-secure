@@ -13,6 +13,7 @@ import { hmacFingerprint, piiFingerprint } from './fingerprint.mjs';
 import { mask } from './masks.mjs';
 import { makeT } from '../lib/i18n.mjs';
 import { BotSecureError } from '../lib/errors.mjs';
+import { listAssets, readAsset } from '../assets/index.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const RULES_DIR = join(HERE, 'rules');
@@ -39,10 +40,10 @@ let PII = undefined; // módulo pii-mx.mjs (import dinámico; undefined = sin in
 export function loadRules() {
   if (RULES) return RULES;
   const out = [];
-  for (const f of readdirSync(RULES_DIR).sort()) {
+  for (const f of listAssets('rules').sort()) {
     if (!f.endsWith('.json')) continue;
     let body;
-    try { body = JSON.parse(readFileSync(join(RULES_DIR, f), 'utf8')); } catch (e) {
+    try { body = JSON.parse(readAsset('rules', f)); } catch (e) {
       throw new BotSecureError('engine.rulesCorrupt', { vars: { file: f }, fix: `node -e "JSON.parse(require('fs').readFileSync('src/engine/rules/${f}','utf8'))"`, cause: e });
     }
     const rules = Array.isArray(body) ? body : body.rules;
@@ -206,7 +207,7 @@ function judge({ rule, allow, value, line, lineNo, column, rel, mode, inTest, in
   for (const re of allow ?? []) if (re.test(v)) return null;
 
   const strongKey = STRONG_KEY_RE.test(name ?? '') || STRONG_KEY_RE.test(line ?? '');
-  const res = evaluate({ value: v, family: rule.family ?? 'generic', strongKey, lineText: line, mode, rule });
+  const res = evaluate({ value: v, family: rule.family ?? 'generic', strongKey, lineText: line, mode, rule, path: rel });
   if (res.drop) return null;
 
   if (rule.entropy != null && !passesEntropy(v, rule.entropy)) return null;
@@ -245,7 +246,9 @@ function scanFlattened(text, rel, rule, mode, inTest, inBuild, push, claimed) {
   for (const entry of flattenConfig(text, rel)) {
     if (!isStrongKey(entry.keyPath)) continue;
     const lineText = lines[entry.line - 1] ?? '';
-    const f = judge({ rule, allow: [], value: entry.value, line: `${entry.keyPath}: ${entry.value}`, lineNo: entry.line, column: 1, rel, mode, inTest, inBuild, name: entry.keyPath.split('.').pop() });
+    // El texto REAL de la línea importa: ahí viven `# bot-secure:fake` y `gitleaks:allow`.
+    // Se concatena con el keyPath para no perder la señal de "clave fuerte" en formatos anidados.
+    const f = judge({ rule, allow: [], value: entry.value, line: `${entry.keyPath}: ${entry.value}${lineText ? ` ${lineText}` : ''}`, lineNo: entry.line, column: 1, rel, mode, inTest, inBuild, name: entry.keyPath.split('.').pop() });
     if (!f) continue;
     if (overlaps(claimed, entry.line, 0, (lineText.length || 1))) continue;
     claim(claimed, entry.line, 0, lineText.length || 1);

@@ -1,5 +1,6 @@
 // API pública del motor: scanText (con worker + timeout en guard) y scanPaths (Report del contrato).
 import { closeSync, existsSync, openSync, readFileSync, readSync } from 'node:fs';
+import PKG_JSON from '../../package.json' with { type: 'json' };
 import { dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Worker } from 'node:worker_threads';
@@ -38,7 +39,7 @@ let PKG = null;
 /** Versión del paquete (para el encabezado del reporte). */
 function version() {
   if (PKG) return PKG;
-  try { PKG = readJson(join(HERE, '..', '..', 'package.json')).version ?? '0.0.0'; } catch { PKG = '0.0.0'; }
+  PKG = PKG_JSON.version ?? '0.0.0';
   return PKG;
 }
 

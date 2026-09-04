@@ -1,5 +1,5 @@
 # Evidencia real: test/e2e/guard-hooks.test.mjs
-# Generado: 2026-09-04T03:43:17.626Z
+# Generado: 2026-09-04T04:21:04.459Z
 # node v26.7.0 · darwin
 
 ### Preparación
@@ -46,7 +46,7 @@ Sin bloqueos. Trabaja en ai-dev / ai/*. Nunca leas .env ni pegues secretos: usa 
 
 ### prompt con secreto falso
 exit=2
-bot-secure: el prompt contiene 1 posible(s) secreto(s)/PII (stub-aws-akid). No pegues valores reales: usa __AI_PLACEHOLDER__X__ o un valor falso.
+bot-secure: el prompt contiene 1 posible(s) secreto(s)/PII (aws-access-key-id). No pegues valores reales: usa __AI_PLACEHOLDER__X__ o un valor falso.
 
 ### prompt normal
 exit=0
@@ -64,7 +64,7 @@ exit=0  deny: Lectura fuera del workspace denegada: <repo>/package.json. Trabaja
 exit=0  deny: Lectura de recurso sensible denegada: ~/.claude.json (home-credentials). Los secretos viven fuera del entorno de IA; usa .env.ai.
 
 ### pre-tool Write con secreto
-exit=0  deny: Contenido con posible secreto/PII (stub-aws-akid) denegado en backend/src/config.js. Usa __AI_PLACEHOLDER__X__ o deja el campo vacío; los valores de IA viven en .env.ai.
+exit=0  deny: Contenido con posible secreto/PII (aws-access-key-id) denegado en backend/src/config.js. Usa __AI_PLACEHOLDER__X__ o deja el campo vacío; los valores de IA viven en .env.ai.
 
 ### pre-tool Write con `gitleaks:allow`
 exit=0  deny: Escribir supresiones (gitleaks:allow, bot-secure:allow, allowlist secret) está denegado: usa bot-secure baseline add con revisión.
@@ -131,12 +131,12 @@ bot-secure: falta <ws>/.claude/hooks/guard.mjs; la guarda bloquea. Arreglo: bot-
 
 ### lanzador fuera de un workspace
 exit=2
-bot-secure: no encuentro el workspace (.bot-secure/policy.json) desde <repo>/test/e2e/tmp/sin-workspace-K3kLlS. Arreglo: abre Claude Code en la raíz del workspace de IA
+bot-secure: no encuentro el workspace (.bot-secure/policy.json) desde <repo>/test/e2e/tmp/sin-workspace-gweAJ1. Arreglo: abre Claude Code en la raíz del workspace de IA
 
 ### session-end con sesión contaminada
 exit=0
-archivo: INCIDENT-2026-09-04T03-43-17-370Z.md
-# Incidente bot-secure — 2026-09-04T03:43:17.370Z
+archivo: INCIDENT-2026-09-04T04-21-04-149Z.md
+# Incidente bot-secure — 2026-09-04T04:21:04.149Z
 
 - Sesión: s-test
 - Workspace: tienda

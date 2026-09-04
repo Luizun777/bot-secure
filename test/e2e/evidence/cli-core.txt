@@ -1,0 +1,510 @@
+# Evidencia real: test/e2e/cli-core-init.test.mjs
+# Generado: 2026-09-04T04:21:02.652Z
+# node v26.7.0 · darwin
+
+### bot-secure init --yes  (exit 0)
+▸ Preparando el workspace <tmp>/tienda-ai
+▸ Revisando que no haya secretos…
+✅ Sin hallazgos en el árbol de trabajo
+▸ Generando contexto, reglas y guardas…
+created  AGENTS.md
+created  CLAUDE.md
+created  README.md
+created  .github/PULL_REQUEST_TEMPLATE.md
+created  .github/CODEOWNERS
+created  .claude/rules/seguridad-datos.md
+created  .claude/rules/git-ramas.md
+created  .claude/rules/tests.md
+created  .claude/rules/docs.md
+created  .claude/skills/hu/SKILL.md
+created  .claude/skills/adr/SKILL.md
+created  .claude/skills/bootstrap-contexto/SKILL.md
+created  .claude/skills/sync-docs/SKILL.md
+created  .claude/skills/revision-seguridad/SKILL.md
+created  .claude/agents/explorador.md
+created  .claude/agents/revisor-seguridad.md
+created  .claude/agents/docs-sync.md
+created  docs/INDEX.md
+created  docs/ARCHITECTURE.md
+created  docs/CONVENTIONS.md
+created  docs/TESTING.md
+created  docs/RUNBOOK.md
+created  docs/SECURITY.md
+created  docs/GLOSSARY.md
+created  docs/LESSONS.md
+created  docs/decisions/0000-plantilla-adr.md
+created  docs/decisions/0001-rama-ai-dev-y-placeholders.md
+created  docs/decisions/0002-guarda-de-rama-bloquear-e-instruir.md
+created  docs/decisions/0003-workspace-de-ia.md
+created  docs/user-stories/INDEX.md
+created  docs/user-stories/_PLANTILLA-HU.md
+created  docs/user-stories/HU-0001-ejemplo.md
+created  .env.ai
+created  .env.example
+created  docs/ADAPTERS.md
+created  mocks/idp/config.json
+created  mocks/idp/README.md
+created  mocks/wiremock/mappings/default.json
+created  mocks/README.md
+created  compose.ai.yml
+created  .github/workflows/bot-secure.yml
+created  .github/workflows/ai-sync.yml
+created  .github/workflows/ai-return.yml
+created  infosec/managed-settings.json
+created  infosec/rulesets.json
+created  infosec/apply.sh
+created  infosec/checklist-contrato.md
+created  infosec/enforced-vs-best-effort.md
+created  infosec/CODEOWNERS.ejemplo
+created  .bot-secure/fakes.json
+created  docs/AI-ENV.md
+created  .claude/settings.json
+created  .claude/hooks/run
+created  .claude/hooks/run.ps1
+created  .githooks/pre-commit
+created  .githooks/pre-push
+created  .githooks/post-checkout
+created  .githooks/run.mjs
+Guarda instalada desde <repo>/dist/guard.mjs
+✅ 58 creado(s), 0 actualizado(s), 0 sin cambios, 0 pendiente(s) (.new)
+Workspace listo: <tmp>/tienda-ai
+Siguiente paso: bot-secure db up  ·  luego  bot-secure claude
+⚠️  No se detectó ninguna app todavía; se genera el contexto igual
+
+### verifyIntegrity (solo guardas)
+{
+  "ok": true,
+  "drift": []
+}
+
+### bot-secure init --yes --json  (exit 0)
+{
+  "command": "init",
+  "root": "<tmp>/tienda-ai",
+  "project": "tienda",
+  "apps": [],
+  "scan": {
+    "findings": 3,
+    "critical": 0
+  },
+  "artifacts": [
+    {
+      "rel": "AGENTS.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "CLAUDE.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "README.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".github/PULL_REQUEST_TEMPLATE.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".github/CODEOWNERS",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/rules/seguridad-datos.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/rules/git-ramas.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/rules/tests.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/rules/docs.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/skills/hu/SKILL.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/skills/adr/SKILL.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/skills/bootstrap-contexto/SKILL.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/skills/sync-docs/SKILL.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/skills/revision-seguridad/SKILL.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/agents/explorador.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/agents/revisor-seguridad.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/agents/docs-sync.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/INDEX.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/ARCHITECTURE.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/CONVENTIONS.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/TESTING.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/RUNBOOK.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/SECURITY.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/GLOSSARY.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/LESSONS.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/decisions/0000-plantilla-adr.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/decisions/0001-rama-ai-dev-y-placeholders.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/decisions/0002-guarda-de-rama-bloquear-e-instruir.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/decisions/0003-workspace-de-ia.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/user-stories/INDEX.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/user-stories/_PLANTILLA-HU.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/user-stories/HU-0001-ejemplo.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".env.ai",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".env.example",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/ADAPTERS.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "mocks/idp/config.json",
+      "action": "unchanged"
+    },
+    {
+      "rel": "mocks/idp/README.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "mocks/wiremock/mappings/default.json",
+      "action": "unchanged"
+    },
+    {
+      "rel": "mocks/README.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "compose.ai.yml",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".github/workflows/bot-secure.yml",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".github/workflows/ai-sync.yml",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".github/workflows/ai-return.yml",
+      "action": "unchanged"
+    },
+    {
+      "rel": "infosec/managed-settings.json",
+      "action": "unchanged"
+    },
+    {
+      "rel": "infosec/rulesets.json",
+      "action": "unchanged"
+    },
+    {
+      "rel": "infosec/apply.sh",
+      "action": "unchanged"
+    },
+    {
+      "rel": "infosec/checklist-contrato.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "infosec/enforced-vs-best-effort.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": "infosec/CODEOWNERS.ejemplo",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".bot-secure/fakes.json",
+      "action": "unchanged"
+    },
+    {
+      "rel": "docs/AI-ENV.md",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/settings.json",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/hooks/run",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".claude/hooks/run.ps1",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".githooks/pre-commit",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".githooks/pre-push",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".githooks/post-checkout",
+      "action": "unchanged"
+    },
+    {
+      "rel": ".githooks/run.mjs",
+      "action": "unchanged"
+    }
+  ],
+  "summary": {
+    "created": 0,
+    "updated": 0,
+    "unchanged": 58,
+    "pending": 0
+  },
+  "guard": {
+    "action": "bundle",
+    "from": "<repo>/dist/guard.mjs",
+    "sha256": "1df0331f4f6d8f7d216f497e9298fe9e8200bf297a1291852e3052081040b1a7"
+  },
+  "hooks": [],
+  "dryRun": false
+}
+⚠️  No se detectó ninguna app todavía; se genera el contexto igual
+⚠️  3 hallazgo(s) (0 críticos): revisa .bot-secure/reports/
+
+### bot-secure doctor --json  (exit 0)
+{
+  "command": "doctor",
+  "root": "<tmp>/tienda-ai",
+  "project": "tienda",
+  "state": "warn",
+  "exitCode": 0,
+  "rows": [
+    {
+      "id": "node",
+      "state": "ok",
+      "message": "node 26.7.0 en /Users/luizun/.hermes/node/bin/node",
+      "fix": null
+    },
+    {
+      "id": "claude",
+      "state": "warn",
+      "message": "Solo está la app de escritorio (/Applications/Claude.app): no hay `claude` en el PATH",
+      "fix": "npm i -g @anthropic-ai/claude-code"
+    },
+    {
+      "id": "claude-config",
+      "state": "warn",
+      "message": "Falta la carpeta de configuración <tmp>/.claude",
+      "fix": "claude"
+    },
+    {
+      "id": "account",
+      "state": "warn",
+      "message": "No se pudo leer la cuenta de Claude",
+      "fix": "claude /login"
+    },
+    {
+      "id": "workspace",
+      "state": "ok",
+      "message": "Workspace en <tmp>/tienda-ai",
+      "fix": null
+    },
+    {
+      "id": "policy",
+      "state": "ok",
+      "message": "Política válida: perfil sensitive, 0 app(s)",
+      "fix": null
+    },
+    {
+      "id": "integrity",
+      "state": "ok",
+      "message": "Los archivos generados coinciden con lock.json",
+      "fix": null
+    },
+    {
+      "id": "env",
+      "state": "ok",
+      "message": "Ningún archivo .env con valores reales dentro del workspace",
+      "fix": null
+    },
+    {
+      "id": "sandbox",
+      "state": "ok",
+      "message": "Aislamiento del sistema disponible (sandbox-exec)",
+      "fix": null
+    },
+    {
+      "id": "db",
+      "state": "warn",
+      "message": "No hay Docker ni Podman: la base de datos de pruebas usa el modo reducido",
+      "fix": "https://podman.io"
+    }
+  ]
+}
+
+### bot-secure status  (exit 0)
+bot-secure — tienda
+<tmp>/tienda-ai
+
+Apps
+  Sin apps registradas todavía
+Base de datos
+  • No hay Docker ni Podman: la base de datos de pruebas usa el modo reducido
+Aislamiento
+  • Política válida: perfil sensitive, 0 app(s)
+  • Los archivos generados coinciden con lock.json
+  • Ningún archivo .env con valores reales dentro del workspace
+  • Aislamiento del sistema disponible (sandbox-exec)
+Cuenta
+  • Solo está la app de escritorio (/Applications/Claude.app): no hay `claude` en el PATH
+  • No se pudo leer la cuenta de Claude
+
+4 cosa(s) por revisar: bot-secure doctor
+
+### bot-secure doctor --json  (exit 3)
+{
+  "command": "doctor",
+  "root": "<tmp>/tienda-ai",
+  "project": "tienda",
+  "state": "drift",
+  "exitCode": 3,
+  "rows": [
+    {
+      "id": "node",
+      "state": "ok",
+      "message": "node 26.7.0 en /Users/luizun/.hermes/node/bin/node",
+      "fix": null
+    },
+    {
+      "id": "claude",
+      "state": "warn",
+      "message": "Solo está la app de escritorio (/Applications/Claude.app): no hay `claude` en el PATH",
+      "fix": "npm i -g @anthropic-ai/claude-code"
+    },
+    {
+      "id": "claude-config",
+      "state": "warn",
+      "message": "Falta la carpeta de configuración <tmp>/.claude",
+      "fix": "claude"
+    },
+    {
+      "id": "account",
+      "state": "warn",
+      "message": "No se pudo leer la cuenta de Claude",
+      "fix": "claude /login"
+    },
+    {
+      "id": "workspace",
+      "state": "ok",
+      "message": "Workspace en <tmp>/tienda-ai",
+      "fix": null
+    },
+    {
+      "id": "policy",
+      "state": "ok",
+      "message": "Política válida: perfil sensitive, 0 app(s)",
+      "fix": null
+    },
+    {
+      "id": "integrity",
+      "state": "error",
+      "message": "1 archivo(s) generados cambiaron a mano: .claude/hooks/guard.mjs",
+      "fix": "bot-secure init --force"
+    },
+    {
+      "id": "env",
+      "state": "ok",
+      "message": "Ningún archivo .env con valores reales dentro del workspace",
+      "fix": null
+    },
+    {
+      "id": "sandbox",
+      "state": "ok",
+      "message": "Aislamiento del sistema disponible (sandbox-exec)",
+      "fix": null
+    },
+    {
+      "id": "db",
+      "state": "warn",
+      "message": "No hay Docker ni Podman: la base de datos de pruebas usa el modo reducido",
+      "fix": "https://podman.io"
+    }
+  ]
+}
+
+### bot-secure claude  (exit 0)
+Comprobando el workspace…
+Entorno limpio con 15 variable(s) de .env.ai
+No hay `claude` en el PATH. Abre la app de escritorio así:
+  1. Abre Claude (app de escritorio).
+  2. Elige «Open folder» y selecciona exactamente esta carpeta: <tmp>/tienda-ai
+  3. Las guardas del proyecto se cargan solas al abrir la carpeta correcta.
+Arreglo: npm i -g @anthropic-ai/claude-code
+⚠️  En la app de escritorio no se puede limpiar el entorno: es un nivel best-effort.

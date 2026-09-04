@@ -55,8 +55,10 @@ export const SDK_CATALOG = [
   { id: 'recaptcha-site', names: /RECAPTCHA.*(SITE|PUBLIC)/i, gen: () => '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', test: (v) => v === '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI' },
   { id: 'recaptcha-secret', names: /RECAPTCHA.*SECRET/i, gen: () => '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe', test: (v) => v === '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe' },
   { id: 'mapbox', names: /MAPBOX/i, gen: () => `pk.${b64url(JSON.stringify({ u: 'ai-local', a: 'bot-secure:fake' }))}.AIPLACEHOLDER`, test: (v) => /^pk\.[A-Za-z0-9_-]+\.AIPLACEHOLDER$/.test(v) },
-  { id: 'aws-access-key', names: /AWS_ACCESS_KEY_ID|AWS.*ACCESS_KEY$/i, gen: () => 'AKIAIOSFODNN7EXAMPLE', test: (v) => v === 'AKIAIOSFODNN7EXAMPLE' },
-  { id: 'aws-secret-key', names: /AWS_SECRET_ACCESS_KEY|AWS.*SECRET/i, gen: () => 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY', test: (v) => v === 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY' },
+  // Las llaves de ejemplo de AWS (AKIAIOSFODNN7EXAMPLE…) las reporta el escáner como CRITICAL:
+  // usamos valores con la MISMA forma pero con AIPLACEHOLDER dentro, que el motor reconoce.
+  { id: 'aws-access-key', names: /AWS_ACCESS_KEY_ID|AWS.*ACCESS_KEY$/i, gen: () => 'AKIAAIPLACEHOLDER000', test: (v) => v === 'AKIAAIPLACEHOLDER000' },
+  { id: 'aws-secret-key', names: /AWS_SECRET_ACCESS_KEY|AWS.*SECRET/i, gen: () => `AIPLACEHOLDER${fill('aws-secret-key', 27)}`, test: (v) => v === `AIPLACEHOLDER${fill('aws-secret-key', 27)}` },
 ];
 
 /** Placeholder rellenado a una longitud mínima (JWT HS256 exige ≥ 32 bytes; usamos 64). */
@@ -159,7 +161,7 @@ export function isFake(value) {
   if (!v) return false;
   if (PLACEHOLDER_RE.test(v) || PLACEHOLDER_PADDED_RE.test(v)) return true;
   if (SDK_CATALOG.some((s) => s.test(v))) return true;
-  if (v === GUID_FAKE || v === EMAIL_FAKE || v === HOST_FAKE) return true;
+  if (v === GUID_FAKE || v === EMAIL_FAKE || v === HOST_FAKE || v === '127.0.0.1' || v === '::1') return true;
   if (/^ai-[a-z0-9]+(-[a-z0-9]+)+$/.test(v)) return true;
   if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/[A-Za-z0-9/._-]*)?$/.test(v)) return true;
   if (/^(redis|mongodb|amqp|smtp):\/\/(localhost|127\.0\.0\.1)(:\d+)?(\/[A-Za-z0-9_]*)?$/.test(v)) return true;
@@ -174,7 +176,7 @@ export const FAKE_REGISTRY = Object.freeze([
   { id: 'identifier', kind: 'identifier', pattern: '^ai-[a-z0-9]+(-[a-z0-9]+)+$', example: 'ai-tienda-bucket' },
   { id: 'guid', kind: 'guid', pattern: '^00000000-0000-4000-8000-000000000000$', example: GUID_FAKE },
   { id: 'email', kind: 'email', pattern: '^noreply@ai\\.local$', example: EMAIL_FAKE },
-  { id: 'host', kind: 'host', pattern: '^localhost$', example: HOST_FAKE },
+  { id: 'host', kind: 'host', pattern: '^(localhost|127\\.0\\.0\\.1|::1)$', example: HOST_FAKE },
   { id: 'url', kind: 'url', pattern: '^https?://(localhost|127\\.0\\.0\\.1)(:\\d+)?(/.*)?$', example: `http://localhost:${MOCK_PORTS.idp}/default` },
   ...SDK_CATALOG.map((s) => ({ id: s.id, kind: 'sdk-key', pattern: null, example: s.gen('EXAMPLE', 'tienda') })),
 ]);

@@ -8,6 +8,7 @@ try { esbuild = require('esbuild'); } catch { console.error('Falta esbuild. Arre
 // las traducciones deben incrustarse antes de empaquetar
 await import('./gen-i18n.mjs');
 await import('./gen-commands.mjs');
+await import('./gen-assets.mjs');
 mkdirSync('dist', { recursive: true });
 const targets = [
   // el propio bin/bot-secure.mjs ya trae el shebang: añadir banner lo duplicaba y rompía el bundle

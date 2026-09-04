@@ -344,10 +344,13 @@ test('ruta de app inválida → BotSecureError con fix', async () => {
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test('las plantillas se resuelven dentro del paquete de bot-secure', async () => {
-  const { TEMPLATES_DIR, loadTemplate } = await import('../../src/generate/md-helpers.mjs');
-  assert.ok(existsSync(path.join(TEMPLATES_DIR, 'md', 'es', 'AGENTS.md')), `TEMPLATES_DIR inválido: ${TEMPLATES_DIR}`);
-  assert.ok(existsSync(path.join(TEMPLATES_DIR, 'claude', 'rules', 'seguridad-datos.md')));
+test('las plantillas viajan dentro del bot, nunca se leen del proyecto destino', async () => {
+  const { loadTemplate } = await import('../../src/generate/md-helpers.mjs');
+  const { listAssets } = await import('../../src/assets/index.mjs');
+  // Deben servirse del acceso a datos (disco en el repo, incrustadas desde dist/).
+  const plantillas = listAssets('templates');
+  assert.ok(plantillas.includes('md/es/AGENTS.md'), 'falta la plantilla de AGENTS.md');
+  assert.ok(plantillas.includes('claude/rules/seguridad-datos.md'), 'falta la regla de seguridad de datos');
   assert.match(loadTemplate('claude', 'agents/explorador.md'), /^---\n/);
   await assert.rejects(
     async () => loadTemplate('md', 'no-existe.md'),
