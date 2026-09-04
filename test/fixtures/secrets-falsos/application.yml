@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://db.interno.local:5432/tienda
+    username: app
+    password: S3cr3t0SpringProd
+  jpa:
+    show-sql: false

@@ -1,0 +1,157 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "encrypted-sops",
+      "category": "config",
+      "severity": "INFO",
+      "description": {
+        "es": "Valor cifrado con SOPS",
+        "en": "SOPS-encrypted value"
+      },
+      "keywords": [
+        "enc["
+      ],
+      "regex": "(ENC\\[[A-Za-z0-9_]{2,},)",
+      "secretGroup": 1,
+      "family": "encrypted",
+      "maskKind": "generic",
+      "remediation": {
+        "kind": "secret"
+      }
+    },
+    {
+      "id": "encrypted-ansible-vault",
+      "category": "config",
+      "severity": "INFO",
+      "description": {
+        "es": "Valor cifrado con Ansible Vault",
+        "en": "Ansible Vault encrypted value"
+      },
+      "keywords": [
+        "$ansible_vault"
+      ],
+      "regex": "(\\$ANSIBLE_VAULT;[0-9.]+;[A-Z0-9]+)",
+      "secretGroup": 1,
+      "family": "encrypted",
+      "maskKind": "generic",
+      "remediation": {
+        "kind": "secret"
+      }
+    },
+    {
+      "id": "encrypted-spring-cipher",
+      "category": "config",
+      "severity": "INFO",
+      "description": {
+        "es": "Valor cifrado de Spring Cloud Config",
+        "en": "Spring Cloud Config encrypted value"
+      },
+      "keywords": [
+        "{cipher}"
+      ],
+      "regex": "(\\{cipher\\}[A-Za-z0-9+/=]{8,})",
+      "secretGroup": 1,
+      "family": "encrypted",
+      "maskKind": "generic",
+      "remediation": {
+        "kind": "secret"
+      }
+    },
+    {
+      "id": "encrypted-vault-ref",
+      "category": "config",
+      "severity": "INFO",
+      "description": {
+        "es": "Referencia cifrada de Vault Transit",
+        "en": "Vault Transit encrypted reference"
+      },
+      "keywords": [
+        "vault:v"
+      ],
+      "regex": "(vault:v\\d+:[A-Za-z0-9+/=]{8,})",
+      "secretGroup": 1,
+      "family": "encrypted",
+      "maskKind": "generic",
+      "remediation": {
+        "kind": "secret"
+      }
+    },
+    {
+      "id": "encrypted-sealed-secret",
+      "category": "config",
+      "severity": "INFO",
+      "description": {
+        "es": "SealedSecret de Bitnami",
+        "en": "Bitnami SealedSecret"
+      },
+      "keywords": [
+        "agb"
+      ],
+      "regex": "(AgB[A-Za-z0-9+/=]{40,})",
+      "secretGroup": 1,
+      "family": "encrypted",
+      "maskKind": "generic",
+      "remediation": {
+        "kind": "secret"
+      }
+    },
+    {
+      "id": "encrypted-pgp-message",
+      "category": "config",
+      "severity": "INFO",
+      "description": {
+        "es": "Mensaje PGP cifrado",
+        "en": "Encrypted PGP message"
+      },
+      "keywords": [
+        "-----begin pgp message"
+      ],
+      "regex": "(-----BEGIN PGP MESSAGE-----)",
+      "secretGroup": 1,
+      "family": "encrypted",
+      "maskKind": "generic",
+      "remediation": {
+        "kind": "secret"
+      }
+    },
+    {
+      "id": "encrypted-fernet",
+      "category": "config",
+      "severity": "INFO",
+      "description": {
+        "es": "Token cifrado Fernet",
+        "en": "Fernet encrypted token"
+      },
+      "keywords": [
+        "gaaaaa"
+      ],
+      "regex": "\\b(gAAAAA[A-Za-z0-9_=-]{20,})",
+      "secretGroup": 1,
+      "family": "encrypted",
+      "maskKind": "generic",
+      "remediation": {
+        "kind": "secret"
+      }
+    },
+    {
+      "id": "encrypted-kms-blob",
+      "category": "config",
+      "severity": "INFO",
+      "description": {
+        "es": "Blob cifrado con AWS KMS",
+        "en": "AWS KMS encrypted blob"
+      },
+      "keywords": [
+        "aqicahh"
+      ],
+      "regex": "\\b(AQICAHh[A-Za-z0-9+/=]{20,})",
+      "secretGroup": 1,
+      "family": "encrypted",
+      "maskKind": "generic",
+      "remediation": {
+        "kind": "secret"
+      }
+    }
+  ]
+}

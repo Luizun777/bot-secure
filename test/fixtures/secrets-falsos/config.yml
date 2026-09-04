@@ -1,0 +1,4 @@
+security:
+  jwt:
+    key: mR8kL2pQ7vT4xN6bY1cW9zA3sD5fG0hJ
+    ttl: 3600

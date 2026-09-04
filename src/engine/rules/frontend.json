@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "frontend-public-secret",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Secreto expuesto en una variable pública de frontend",
+        "en": "Secret exposed through a public frontend variable"
+      },
+      "keywords": [
+        "next_public_",
+        "vite_",
+        "react_app_",
+        "expo_public_",
+        "ng_app_",
+        "nuxt_public_",
+        "public_"
+      ],
+      "regex": "\\b(?:NEXT_PUBLIC_|VITE_|REACT_APP_|EXPO_PUBLIC_|NG_APP_|NUXT_PUBLIC_|PUBLIC_)([A-Z0-9_]{2,50})\\s*[:=]\\s*['\"]?([^\\s'\"#,}]{8,})",
+      "secretGroup": 2,
+      "nameGroup": 1,
+      "family": "frontend",
+      "maskKind": "secret",
+      "remediation": {
+        "kind": "secret"
+      }
+    },
+    {
+      "id": "mapbox-secret-token",
+      "category": "secret",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Token secreto de Mapbox (sk.)",
+        "en": "Mapbox secret token (sk.)"
+      },
+      "keywords": [
+        "sk.ey"
+      ],
+      "regex": "\\b(sk\\.eyJ[A-Za-z0-9_-]{20,}\\.[A-Za-z0-9_-]{20,})",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "MAPBOX_SECRET_TOKEN"
+      }
+    }
+  ]
+}

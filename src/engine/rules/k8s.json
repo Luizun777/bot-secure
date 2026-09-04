@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "k8s-secret-data",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Secreto de Kubernetes con valor base64 real",
+        "en": "Kubernetes Secret with a real base64 value"
+      },
+      "keywords": [
+        "kind: secret",
+        "kind:secret",
+        "kind: \"secret\"",
+        "kind: 'secret'"
+      ],
+      "minLen": 6,
+      "family": "k8s",
+      "maskKind": "secret",
+      "scope": "k8s",
+      "remediation": {
+        "kind": "secret"
+      }
+    }
+  ]
+}

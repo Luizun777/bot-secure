@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "android-keystore-file",
+      "category": "file",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Almacén de claves de Android en el repositorio",
+        "en": "Android keystore committed to the repository"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/*.jks",
+        "**/*.keystore",
+        "**/*.bks"
+      ],
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    },
+    {
+      "id": "apple-auth-key-file",
+      "category": "file",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Clave .p8 de Apple en el repositorio",
+        "en": "Apple .p8 auth key committed to the repository"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/*.p8"
+      ],
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    },
+    {
+      "id": "apple-mobileprovision",
+      "category": "file",
+      "severity": "HIGH",
+      "description": {
+        "es": "Perfil de aprovisionamiento de Apple en el repositorio",
+        "en": "Apple provisioning profile in the repository"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/*.mobileprovision"
+      ],
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    },
+    {
+      "id": "google-services-file",
+      "category": "file",
+      "severity": "HIGH",
+      "description": {
+        "es": "Configuración de Firebase/Google Services versionada",
+        "en": "Firebase/Google Services configuration committed"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/google-services.json",
+        "**/GoogleService-Info.plist"
+      ],
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    },
+    {
+      "id": "android-local-properties",
+      "category": "file",
+      "severity": "HIGH",
+      "description": {
+        "es": "local.properties/key.properties con credenciales",
+        "en": "local.properties/key.properties with credentials"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/local.properties",
+        "**/key.properties"
+      ],
+      "contentRegex": "(?:storePassword|keyPassword|keyAlias)\\s*=\\s*\\S+",
+      "contentFlags": "i",
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    }
+  ]
+}

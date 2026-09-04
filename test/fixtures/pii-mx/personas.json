@@ -1,0 +1,37 @@
+[
+  {
+    "nombre": "Gustavo",
+    "apellido_paterno": "Muñoz",
+    "rfc": "MUMG620322HB4",
+    "nss": "57876272246",
+    "email": "gustavo.munoz778@ai.local"
+  },
+  {
+    "nombre": "Claudia",
+    "apellido_paterno": "Villarreal",
+    "rfc": "VIRC680606757",
+    "nss": "56936811456",
+    "email": "claudia.villarreal80@ai.local"
+  },
+  {
+    "nombre": "Verónica",
+    "apellido_paterno": "Hernández",
+    "rfc": "HEGV5503264Y7",
+    "nss": "38745562231",
+    "email": "veronica.hernandez552@ai.local"
+  },
+  {
+    "nombre": "Carla",
+    "apellido_paterno": "Romero",
+    "rfc": "ROZC600306884",
+    "nss": "09836034414",
+    "email": "carla.romero655@ai.local"
+  },
+  {
+    "nombre": "Catalina",
+    "apellido_paterno": "Cruz",
+    "rfc": "CUGC050710E47",
+    "nss": "26280505038",
+    "email": "catalina.cruz13@ai.local"
+  }
+]

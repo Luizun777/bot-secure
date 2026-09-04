@@ -1,0 +1,2 @@
+DATABASE_URL=postgres://app_user:S3cr3t0Prod2026@db.interno.local:5432/tienda
+jdbc.url=jdbc:mysql://db.interno.local:3306/tienda?user=app&password=Otr0S3cr3t0X9

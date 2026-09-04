@@ -1,0 +1,253 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "dotenv-file",
+      "category": "file",
+      "severity": "HIGH",
+      "description": {
+        "es": "Archivo .env con valores reales",
+        "en": ".env file with real values"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/.env",
+        "**/.env.*"
+      ],
+      "notPaths": [
+        "**/.env.example",
+        "**/.env.sample",
+        "**/.env.template",
+        "**/.env.dist",
+        "**/.env.ai"
+      ],
+      "contentRegex": "^\\s*(?:export\\s+)?[A-Za-z_][A-Za-z0-9_]*\\s*=\\s*(?!\\s*$)(?!\\$)(?!\\{\\{)[\"']?[^\\s\"'#]{4,}",
+      "contentFlags": "m",
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    },
+    {
+      "id": "npmrc-auth-token",
+      "category": "file",
+      "severity": "HIGH",
+      "description": {
+        "es": ".npmrc con token de autenticación",
+        "en": ".npmrc with an authentication token"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/.npmrc"
+      ],
+      "contentRegex": "(?:_authToken|_auth|_password)\\s*=\\s*\\S+",
+      "contentFlags": "i",
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file",
+        "envVar": "NPM_TOKEN"
+      }
+    },
+    {
+      "id": "netrc-credentials",
+      "category": "file",
+      "severity": "HIGH",
+      "description": {
+        "es": ".netrc con credenciales",
+        "en": ".netrc with credentials"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/.netrc",
+        "**/_netrc"
+      ],
+      "contentRegex": "password\\s+\\S+",
+      "contentFlags": "i",
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    },
+    {
+      "id": "git-credentials-file",
+      "category": "file",
+      "severity": "CRITICAL",
+      "description": {
+        "es": ".git-credentials con tokens en claro",
+        "en": ".git-credentials with plaintext tokens"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/.git-credentials"
+      ],
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    },
+    {
+      "id": "kubeconfig-file",
+      "category": "file",
+      "severity": "HIGH",
+      "description": {
+        "es": "kubeconfig con credenciales de cluster",
+        "en": "kubeconfig with cluster credentials"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/kubeconfig*",
+        "**/.kube/config"
+      ],
+      "contentRegex": "(?:client-key-data|token|password)\\s*:",
+      "contentFlags": "i",
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    },
+    {
+      "id": "terraform-state-file",
+      "category": "file",
+      "severity": "HIGH",
+      "description": {
+        "es": "Estado de Terraform (contiene valores sensibles)",
+        "en": "Terraform state (contains sensitive values)"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/*.tfstate",
+        "**/*.tfstate.*"
+      ],
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    },
+    {
+      "id": "ssh-private-key-file",
+      "category": "file",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Clave privada SSH en el repositorio",
+        "en": "SSH private key in the repository"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/id_rsa",
+        "**/id_dsa",
+        "**/id_ecdsa",
+        "**/id_ed25519",
+        "**/*.ppk"
+      ],
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    },
+    {
+      "id": "certificate-key-file",
+      "category": "file",
+      "severity": "HIGH",
+      "description": {
+        "es": "Archivo de clave/certificado en el repositorio",
+        "en": "Key/certificate file in the repository"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/*.pem",
+        "**/*.key",
+        "**/*.pfx",
+        "**/*.p12"
+      ],
+      "notPaths": [
+        "**/*.pub.pem",
+        "**/*public*.pem"
+      ],
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    },
+    {
+      "id": "har-file",
+      "category": "file",
+      "severity": "HIGH",
+      "description": {
+        "es": "Captura HAR (cookies y tokens reales)",
+        "en": "HAR capture (real cookies and tokens)"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/*.har",
+        "**/*.saz"
+      ],
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    },
+    {
+      "id": "password-store-file",
+      "category": "file",
+      "severity": "HIGH",
+      "description": {
+        "es": "Bóveda de contraseñas o perfil VPN en el repositorio",
+        "en": "Password vault or VPN profile in the repository"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/*.kdbx",
+        "**/*.ovpn",
+        "**/.pgpass",
+        "**/.my.cnf",
+        "**/.s3cfg"
+      ],
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    },
+    {
+      "id": "pkcs12-keystore",
+      "category": "file",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Almacén PKCS#12/JKS detectado por firma binaria",
+        "en": "PKCS#12/JKS keystore detected by magic bytes"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "pii",
+      "paths": [
+        "**/*.p12",
+        "**/*.pfx",
+        "**/*.jks",
+        "**/*.keystore"
+      ],
+      "filesOnly": true,
+      "remediation": {
+        "kind": "file"
+      }
+    }
+  ]
+}

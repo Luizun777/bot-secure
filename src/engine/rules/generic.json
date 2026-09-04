@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "generic-api-key",
+      "category": "secret",
+      "severity": "MEDIUM",
+      "description": {
+        "es": "Valor de alta entropía junto a una clave sensible",
+        "en": "High-entropy value next to a sensitive key"
+      },
+      "keywords": [
+        "access",
+        "api",
+        "auth",
+        "key",
+        "credential",
+        "creds",
+        "passwd",
+        "password",
+        "secret",
+        "token"
+      ],
+      "regex": "[\\w.-]{0,50}(?:access|api|auth|credential|creds|key|passw(?:or)?d|secret|token)[ \\t\\w.-]{0,20}[\"'\\s]{0,3}(?:=|>|:{1,3}=|\\|\\||:|=>|\\?=|,)[\"'\\s=]{0,5}([\\w.=-]{10,150})",
+      "flags": "i",
+      "secretGroup": 1,
+      "entropy": 3.5,
+      "family": "generic",
+      "maskKind": "secret",
+      "notPaths": [
+        "**/*.map",
+        "**/*.min.js",
+        "**/*.min.css",
+        "**/*.snap",
+        "**/*.svg",
+        "**/*.lock",
+        "**/package-lock.json",
+        "**/yarn.lock",
+        "**/pnpm-lock.yaml",
+        "**/go.sum",
+        "**/Cargo.lock",
+        "**/composer.lock",
+        "**/Gemfile.lock",
+        "**/poetry.lock"
+      ],
+      "allowlist": {
+        "stopwords": true,
+        "regexes": [
+          "^[a-zA-Z_.-]+$",
+          "^(?:true|false|null|none|undefined)$",
+          "^\\$\\{?[A-Za-z_][\\w.:-]*\\}?$",
+          "^\\$\\{\\{",
+          "^[0-9.]+$",
+          "^sha(?:256|384|512)-"
+        ]
+      },
+      "remediation": {
+        "kind": "secret"
+      }
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "db-connection-url",
+      "category": "secret",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "URL de conexión con usuario y contraseña",
+        "en": "Connection URL with user and password"
+      },
+      "keywords": [
+        "://"
+      ],
+      "regex": "\\b(?:postgres(?:ql)?|mysql|mariadb|mongodb(?:\\+srv)?|rediss?|amqps?|mssql|sqlserver|oracle|ldaps?|sftp|ftp):\\/\\/[^\\s:/@'\"]{1,64}:([^\\s/@'\"]{3,128})@",
+      "flags": "i",
+      "secretGroup": 1,
+      "family": "connection",
+      "maskKind": "secret",
+      "remediation": {
+        "kind": "url",
+        "envVar": "DATABASE_URL"
+      }
+    },
+    {
+      "id": "ado-connection-string",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Cadena de conexión ADO/ODBC con contraseña",
+        "en": "ADO/ODBC connection string with password"
+      },
+      "keywords": [
+        "password=",
+        "pwd="
+      ],
+      "regex": "(?:Password|Pwd)\\s*=\\s*([^;\"'\\s,}]{3,})",
+      "flags": "i",
+      "secretGroup": 1,
+      "family": "connection",
+      "maskKind": "secret",
+      "require": "(?:Server|Host|Data Source|Initial Catalog|Database|Uid|User Id|Username|Provider|Port)\\s*=",
+      "requireFlags": "i",
+      "remediation": {
+        "kind": "url",
+        "envVar": "DATABASE_URL"
+      }
+    },
+    {
+      "id": "jdbc-password",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "URL JDBC con contraseña",
+        "en": "JDBC URL with password"
+      },
+      "keywords": [
+        "jdbc:"
+      ],
+      "regex": "[?&;](?:password|pwd)=([^;&\\s\"'>]{3,})",
+      "flags": "i",
+      "secretGroup": 1,
+      "family": "connection",
+      "maskKind": "secret",
+      "require": "jdbc:",
+      "remediation": {
+        "kind": "url",
+        "envVar": "DATABASE_URL"
+      }
+    },
+    {
+      "id": "url-with-credentials",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "URL http(s) con credenciales embebidas",
+        "en": "http(s) URL with embedded credentials"
+      },
+      "keywords": [
+        "://"
+      ],
+      "regex": "\\bhttps?:\\/\\/[^\\s:/@'\"]{1,64}:([^\\s/@'\"]{3,128})@[A-Za-z0-9.-]{3,}",
+      "secretGroup": 1,
+      "family": "connection",
+      "maskKind": "secret",
+      "remediation": {
+        "kind": "url"
+      }
+    },
+    {
+      "id": "authorization-header",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Cabecera Authorization con token literal",
+        "en": "Authorization header with a literal token"
+      },
+      "keywords": [
+        "authorization"
+      ],
+      "regex": "authorization[\"'\\s]{0,4}[:=]\\s*[\"']?(?:bearer|basic|token)\\s+([A-Za-z0-9._~+/=-]{16,})",
+      "flags": "i",
+      "secretGroup": 1,
+      "entropy": 3,
+      "family": "generic",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "API_TOKEN"
+      }
+    }
+  ]
+}

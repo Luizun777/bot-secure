@@ -1,0 +1,4 @@
+db:
+    password: ENC[AES256_GCM,data:Q2lwaGVyQ2lwaGVyQ2lwaGVy,type:str]
+api:
+    token: ENC[AES256_GCM,data:T3RyMENpT3RyMENpT3RyMENp,type:str]

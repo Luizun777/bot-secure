@@ -1,0 +1,164 @@
+{
+  "$comment": "Reglas de PII mexicana. Cada regla lleva `validator` (nombre exportado por src/engine/pii-mx.mjs): el regex solo localiza candidatos y el validador decide. Severidad: sin contexto ±2 líneas -> `severityNoContext` (LOW); con contexto o cabecera de columna -> `severity` (MEDIUM); >= `bulkThreshold` registros del mismo tipo en el archivo -> HIGH. `requiresContext:true` (email, teléfono) = sin contexto NO se reporta. `remediation.action` es una clave i18n de src/i18n/<lang>/pii.json. Los regex usan lookarounds y flag `u` porque en JS sin `u` la Ñ y el & no son caracteres de palabra (\\b falla).",
+  "version": 1,
+  "rules": [
+    {
+      "id": "rfc",
+      "category": "pii",
+      "severity": "MEDIUM",
+      "severityNoContext": "LOW",
+      "bulkThreshold": 20,
+      "description": {
+        "es": "RFC (Registro Federal de Contribuyentes) con fecha y dígito verificador válidos",
+        "en": "Mexican tax ID (RFC) with a valid date and check digit"
+      },
+      "keywords": ["rfc", "contribuyente", "taxid", "tax_id", "fiscal", "razon_social", "razonSocial", "emisor", "receptor"],
+      "regex": "(?<![A-ZÑ&0-9])[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{3}(?![A-ZÑ&0-9])",
+      "flags": "gu",
+      "validator": "validateRFC",
+      "maskKind": "rfc",
+      "remediation": { "kind": "identifier", "action": "pii.remediation.identifier" }
+    },
+    {
+      "id": "curp",
+      "category": "pii",
+      "severity": "MEDIUM",
+      "severityNoContext": "LOW",
+      "bulkThreshold": 20,
+      "description": {
+        "es": "CURP (Clave Única de Registro de Población) con entidad y dígito verificador válidos",
+        "en": "Mexican population ID (CURP) with a valid state code and check digit"
+      },
+      "keywords": ["curp", "renapo", "poblacion", "población", "persona", "cliente", "empleado"],
+      "regex": "(?<![A-ZÑ0-9])[A-ZÑ]{4}[0-9]{6}[HM][A-Z]{2}[B-DF-HJ-NP-TV-ZÑ]{3}[0-9A-Z][0-9](?![A-ZÑ0-9])",
+      "flags": "gu",
+      "validator": "validateCURP",
+      "maskKind": "curp",
+      "remediation": { "kind": "identifier", "action": "pii.remediation.identifier" }
+    },
+    {
+      "id": "clabe",
+      "category": "pii",
+      "severity": "MEDIUM",
+      "severityNoContext": "LOW",
+      "bulkThreshold": 20,
+      "description": {
+        "es": "CLABE interbancaria (18 dígitos) con banco del catálogo Banxico y dígito de control válido",
+        "en": "Mexican interbank account (CLABE) with a Banxico bank code and a valid check digit"
+      },
+      "keywords": ["clabe", "cuenta", "account", "banco", "bank", "interbancaria", "spei", "transferencia", "beneficiario", "deposito", "depósito"],
+      "regex": "(?<![0-9])[0-9]{18}(?![0-9])",
+      "flags": "g",
+      "validator": "validateCLABE",
+      "maskKind": "clabe",
+      "remediation": { "kind": "pii", "action": "pii.remediation.clabe" }
+    },
+    {
+      "id": "nss",
+      "category": "pii",
+      "severity": "MEDIUM",
+      "severityNoContext": "LOW",
+      "bulkThreshold": 20,
+      "description": {
+        "es": "NSS del IMSS (11 dígitos) con subdelegación, años plausibles y Luhn válido",
+        "en": "IMSS social security number (11 digits) with a valid subdelegation, plausible years and Luhn"
+      },
+      "keywords": ["nss", "imss", "seguro social", "seguridad social", "afiliacion", "afiliación", "nomina", "nómina", "empleado", "trabajador"],
+      "regex": "(?<![0-9])[0-9]{11}(?![0-9])",
+      "flags": "g",
+      "validator": "validateNSS",
+      "maskKind": "nss",
+      "remediation": { "kind": "identifier", "action": "pii.remediation.identifier" }
+    },
+    {
+      "id": "tarjeta",
+      "category": "pii",
+      "severity": "MEDIUM",
+      "severityNoContext": "LOW",
+      "bulkThreshold": 20,
+      "description": {
+        "es": "Número de tarjeta (PAN) con IIN de marca conocida, longitud válida y Luhn correcto",
+        "en": "Card number (PAN) with a known brand IIN, valid length and correct Luhn"
+      },
+      "keywords": ["tarjeta", "card", "pan", "credito", "crédito", "debito", "débito", "visa", "mastercard", "amex", "pago", "cardnumber", "card_number", "cc"],
+      "regex": "(?<![0-9-])(?:[0-9]{13,19}|[0-9]{4}[ -][0-9]{4}[ -][0-9]{4}[ -][0-9]{1,4})(?![0-9-])",
+      "flags": "g",
+      "validator": "luhn",
+      "maskKind": "card",
+      "remediation": { "kind": "pii", "action": "pii.remediation.card" }
+    },
+    {
+      "id": "ine",
+      "category": "pii",
+      "severity": "MEDIUM",
+      "severityNoContext": "LOW",
+      "bulkThreshold": 20,
+      "checksum": false,
+      "description": {
+        "es": "Clave de elector del INE (18 caracteres); solo se valida estructura, fecha y entidad (el dígito final no tiene algoritmo público)",
+        "en": "INE voter key (18 chars); only structure, date and state are validated (the last digit has no public algorithm)"
+      },
+      "keywords": ["ine", "ife", "elector", "credencial", "identificacion", "identificación", "votar"],
+      "regex": "(?<![A-ZÑ0-9])[A-ZÑ]{6}[0-9]{8}[HM][0-9]{3}(?![A-ZÑ0-9])",
+      "flags": "gu",
+      "validator": "validateINE",
+      "maskKind": "ine",
+      "remediation": { "kind": "identifier", "action": "pii.remediation.identifier" }
+    },
+    {
+      "id": "iban",
+      "category": "pii",
+      "severity": "MEDIUM",
+      "severityNoContext": "LOW",
+      "bulkThreshold": 20,
+      "description": {
+        "es": "IBAN internacional (checksum mod 97) en pagos al extranjero",
+        "en": "International IBAN (mod 97 checksum) used in foreign payments"
+      },
+      "keywords": ["iban", "swift", "bic", "cuenta", "account", "banco", "bank", "transferencia", "wire"],
+      "regex": "(?<![A-Z0-9])[A-Z]{2}[0-9]{2}[A-Z0-9]{10,30}(?![A-Z0-9])",
+      "flags": "g",
+      "validator": "validateIBAN",
+      "maskKind": "pii",
+      "remediation": { "kind": "pii", "action": "pii.remediation.clabe" }
+    },
+    {
+      "id": "email",
+      "category": "pii",
+      "severity": "MEDIUM",
+      "severityNoContext": "LOW",
+      "bulkThreshold": 20,
+      "requiresContext": true,
+      "checksum": false,
+      "description": {
+        "es": "Correo electrónico de una persona (solo se reporta con contexto de datos personales)",
+        "en": "Personal e-mail address (only reported when there is personal-data context)"
+      },
+      "keywords": ["correo", "email", "e-mail", "mail", "cliente", "usuario", "contacto", "titular", "empleado"],
+      "regex": "(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,255}\\.[A-Za-z]{2,24}(?![A-Za-z0-9-])",
+      "flags": "g",
+      "validator": "validateEmail",
+      "maskKind": "email",
+      "remediation": { "kind": "email", "action": "pii.remediation.email" }
+    },
+    {
+      "id": "telefono-mx",
+      "category": "pii",
+      "severity": "MEDIUM",
+      "severityNoContext": "LOW",
+      "bulkThreshold": 20,
+      "requiresContext": true,
+      "checksum": false,
+      "description": {
+        "es": "Teléfono mexicano (+52 o 10 dígitos) de una persona; solo se reporta con contexto",
+        "en": "Mexican phone number (+52 or 10 digits); only reported when there is context"
+      },
+      "keywords": ["telefono", "teléfono", "tel", "celular", "movil", "móvil", "phone", "mobile", "whatsapp", "contacto", "cliente"],
+      "regex": "(?<![0-9+])(?:\\+52[ -]?)?[0-9]{2,3}[ -]?[0-9]{3,4}[ -]?[0-9]{4}(?![0-9-])",
+      "flags": "g",
+      "validator": "validateTelefonoMX",
+      "maskKind": "phone",
+      "remediation": { "kind": "pii", "action": "pii.remediation.phone" }
+    }
+  ]
+}

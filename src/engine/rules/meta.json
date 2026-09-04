@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "inline-suppression-attempt",
+      "category": "config",
+      "severity": "MEDIUM",
+      "description": {
+        "es": "Intento de supresión inline del escáner",
+        "en": "Inline scanner suppression attempt"
+      },
+      "keywords": [
+        "gitleaks:allow",
+        "bot-secure:allow",
+        "allowlist secret",
+        "trufflehog:ignore"
+      ],
+      "family": "generic",
+      "maskKind": "generic",
+      "scope": "meta",
+      "remediation": {
+        "kind": "secret"
+      }
+    },
+    {
+      "id": "symlink-outside-repo",
+      "category": "file",
+      "severity": "HIGH",
+      "description": {
+        "es": "Enlace simbólico que apunta fuera del repositorio",
+        "en": "Symbolic link pointing outside the repository"
+      },
+      "keywords": [],
+      "family": "files",
+      "maskKind": "generic",
+      "scope": "meta",
+      "remediation": {
+        "kind": "file"
+      }
+    }
+  ]
+}

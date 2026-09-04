@@ -1,0 +1,7 @@
+# bot-secure:synthetic seed=2026 rows=5
+nombre,apellidos,rfc,curp,clabe,correo,telefono,cp
+Gustavo,Muñoz Meza,MUMG620322HB4,MUMG620322HSRNZS27,002010631134950221,gustavo.munoz778@ai.local,+52 55 0000 3966,83000
+Claudia,Villarreal Ruiz,VIRC680606757,VIRC680606MZSLZL66,137340545775693018,claudia.villarreal80@ai.local,+52 55 0000 0989,98000
+Verónica,Hernández Gutiérrez,HEGV5503264Y7,HEGV550326MVZRTR58,014010498237816901,veronica.hernandez552@ai.local,+52 55 0000 3242,91000
+Carla,Romero Zapata,ROZC600306884,ROZC600306MDGMPR95,012580055935568549,carla.romero655@ai.local,+52 55 0000 3128,34000
+Catalina,Cruz Gallegos,CUGC050710E47,CUGC050710MYNRLTM2,036540771910311037,catalina.cruz13@ai.local,+52 55 0000 7786,97000

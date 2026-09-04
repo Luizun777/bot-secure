@@ -1,0 +1,21 @@
+{
+  "noRoot": "No root directory was given to scan.",
+  "rulesCorrupt": "Rules file {file} is not valid JSON with rules[].",
+  "badRegex": "Rule {rule} has an invalid regular expression.",
+  "scanTimeout": "Scanning {path} exceeded {ms} ms and was stopped (possible hostile regular expression).",
+  "workerFailed": "Scanning {path} failed in the worker: {message}",
+  "gitleaksMissing": "gitleaks is not installed; only the native engine is used.",
+  "gitleaksFailed": "gitleaks exited with an error: {stderr}",
+  "maskedFile": "(sensitive file)",
+  "remediation.secret": "Rotate the secret and move it to an environment variable; leave the field empty in the repo.",
+  "remediation.identifier": "Replace the identifier with a synthetic value from mocks/.",
+  "remediation.url": "Move the URL with credentials to an environment variable.",
+  "remediation.host": "Replace the real host with the AI environment one.",
+  "remediation.email": "Replace the address with a synthetic one (@example.com).",
+  "remediation.guid": "Replace the identifier with a test GUID.",
+  "remediation.bucket": "Replace the bucket with the AI environment one.",
+  "remediation.region": "Move the region to configuration.",
+  "remediation.sdk-key": "Rotate the SDK key and move it to per-environment configuration.",
+  "remediation.file": "Remove the file from the repository and purge history; rotate whatever it contains.",
+  "remediation.pii": "Replace the personal data with a synthetic value (`bot-secure mocks`)."
+}

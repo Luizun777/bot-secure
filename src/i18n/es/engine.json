@@ -1,0 +1,21 @@
+{
+  "noRoot": "No se indicó la raíz a escanear.",
+  "rulesCorrupt": "El archivo de reglas {file} no es un JSON válido con rules[].",
+  "badRegex": "La regla {rule} tiene una expresión regular inválida.",
+  "scanTimeout": "El escaneo de {path} superó {ms} ms y se detuvo (posible expresión regular hostil).",
+  "workerFailed": "El escaneo de {path} falló en el worker: {message}",
+  "gitleaksMissing": "gitleaks no está instalado; se usa solo el motor nativo.",
+  "gitleaksFailed": "gitleaks terminó con error: {stderr}",
+  "maskedFile": "(archivo sensible)",
+  "remediation.secret": "Rota el secreto y muévelo a una variable de entorno; en el repo deja el campo vacío.",
+  "remediation.identifier": "Sustituye el identificador por un valor sintético de mocks/.",
+  "remediation.url": "Mueve la URL con credenciales a una variable de entorno.",
+  "remediation.host": "Sustituye el host real por el del entorno de IA.",
+  "remediation.email": "Sustituye el correo por uno sintético (@example.com).",
+  "remediation.guid": "Sustituye el identificador por un GUID de prueba.",
+  "remediation.bucket": "Sustituye el bucket por el del entorno de IA.",
+  "remediation.region": "Mueve la región a configuración.",
+  "remediation.sdk-key": "Rota la clave del SDK y muévela a configuración por entorno.",
+  "remediation.file": "Saca el archivo del repositorio y purga la historia; rota lo que contenga.",
+  "remediation.pii": "Sustituye el dato personal por uno sintético (`bot-secure mocks`)."
+}

@@ -1,0 +1,793 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "aws-access-key-id",
+      "category": "secret",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Identificador de clave de acceso de AWS",
+        "en": "AWS access key id"
+      },
+      "keywords": [
+        "akia",
+        "asia",
+        "abia",
+        "acca"
+      ],
+      "regex": "\\b((?:AKIA|ASIA|ABIA|ACCA)[A-Z0-9]{16})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "AWS_ACCESS_KEY_ID"
+      }
+    },
+    {
+      "id": "aws-secret-access-key",
+      "category": "secret",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Clave secreta de AWS junto a una clave contextual",
+        "en": "AWS secret access key near a context keyword"
+      },
+      "keywords": [
+        "aws"
+      ],
+      "regex": "aws[\\w.-]{0,24}(?:secret|access[_-]?key)[\\w.-]{0,24}[\"'\\s:=]{1,10}([A-Za-z0-9/+]{40})(?![A-Za-z0-9/+=])",
+      "flags": "i",
+      "secretGroup": 1,
+      "entropy": 3.5,
+      "family": "prefixed",
+      "maskKind": "secret",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "AWS_SECRET_ACCESS_KEY"
+      }
+    },
+    {
+      "id": "github-token",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Token de GitHub (ghp_/gho_/ghu_/ghs_/ghr_)",
+        "en": "GitHub token (ghp_/gho_/ghu_/ghs_/ghr_)"
+      },
+      "keywords": [
+        "ghp_",
+        "gho_",
+        "ghu_",
+        "ghs_",
+        "ghr_"
+      ],
+      "regex": "\\b(gh[pousr]_[A-Za-z0-9]{36})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "GITHUB_TOKEN"
+      }
+    },
+    {
+      "id": "github-fine-grained-pat",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Token de acceso personal granular de GitHub",
+        "en": "GitHub fine-grained personal access token"
+      },
+      "keywords": [
+        "github_pat_"
+      ],
+      "regex": "\\b(github_pat_[A-Za-z0-9_]{60,100})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "GITHUB_TOKEN"
+      }
+    },
+    {
+      "id": "gitlab-pat",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Token de acceso personal de GitLab",
+        "en": "GitLab personal access token"
+      },
+      "keywords": [
+        "glpat-",
+        "gldt-"
+      ],
+      "regex": "\\b((?:glpat|gldt)-[A-Za-z0-9_-]{20,})",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "GITLAB_TOKEN"
+      }
+    },
+    {
+      "id": "npm-token",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Token de acceso de npm",
+        "en": "npm access token"
+      },
+      "keywords": [
+        "npm_"
+      ],
+      "regex": "\\b(npm_[A-Za-z0-9]{36})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "NPM_TOKEN"
+      }
+    },
+    {
+      "id": "slack-token",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Token de Slack",
+        "en": "Slack token"
+      },
+      "keywords": [
+        "xoxb-",
+        "xoxp-",
+        "xoxa-",
+        "xoxr-",
+        "xoxs-",
+        "xoxe-"
+      ],
+      "regex": "\\b(xox[baprse]-[A-Za-z0-9-]{10,})",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "SLACK_TOKEN"
+      }
+    },
+    {
+      "id": "slack-webhook",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Webhook entrante de Slack",
+        "en": "Slack incoming webhook"
+      },
+      "keywords": [
+        "hooks.slack.com"
+      ],
+      "regex": "(https:\\/\\/hooks\\.slack\\.com\\/(?:services|workflows|triggers)\\/[A-Za-z0-9+/_-]{15,})",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "secret",
+      "remediation": {
+        "kind": "url",
+        "envVar": "SLACK_WEBHOOK_URL"
+      }
+    },
+    {
+      "id": "google-api-key",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Clave de API de Google",
+        "en": "Google API key"
+      },
+      "keywords": [
+        "aiza"
+      ],
+      "regex": "\\b(AIza[A-Za-z0-9_-]{35})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "sdk-key",
+        "envVar": "GOOGLE_API_KEY"
+      }
+    },
+    {
+      "id": "gcp-service-account-key",
+      "category": "secret",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Clave JSON de cuenta de servicio de GCP",
+        "en": "GCP service account JSON key"
+      },
+      "keywords": [
+        "private_key_id"
+      ],
+      "regex": "\"private_key_id\"\\s*:\\s*\"([a-f0-9]{40})\"",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "secret",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "GOOGLE_APPLICATION_CREDENTIALS"
+      }
+    },
+    {
+      "id": "google-oauth-client-secret",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Secreto de cliente OAuth de Google",
+        "en": "Google OAuth client secret"
+      },
+      "keywords": [
+        "gocspx-"
+      ],
+      "regex": "\\b(GOCSPX-[A-Za-z0-9_-]{28})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "GOOGLE_CLIENT_SECRET"
+      }
+    },
+    {
+      "id": "stripe-live-key",
+      "category": "secret",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Clave secreta de Stripe en producción",
+        "en": "Stripe live secret key"
+      },
+      "keywords": [
+        "sk_live_",
+        "rk_live_"
+      ],
+      "regex": "\\b((?:sk|rk)_live_[A-Za-z0-9]{16,})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "STRIPE_SECRET_KEY"
+      }
+    },
+    {
+      "id": "stripe-test-key",
+      "category": "secret",
+      "severity": "MEDIUM",
+      "description": {
+        "es": "Clave de prueba de Stripe",
+        "en": "Stripe test key"
+      },
+      "keywords": [
+        "sk_test_",
+        "rk_test_"
+      ],
+      "regex": "\\b((?:sk|rk)_test_[A-Za-z0-9]{16,})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "STRIPE_SECRET_KEY"
+      }
+    },
+    {
+      "id": "stripe-webhook-secret",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Secreto de webhook de Stripe",
+        "en": "Stripe webhook signing secret"
+      },
+      "keywords": [
+        "whsec_"
+      ],
+      "regex": "\\b(whsec_[A-Za-z0-9]{24,})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "STRIPE_WEBHOOK_SECRET"
+      }
+    },
+    {
+      "id": "twilio-api-key",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Clave de API de Twilio",
+        "en": "Twilio API key"
+      },
+      "keywords": [
+        "sk"
+      ],
+      "regex": "\\b(SK[0-9a-f]{32})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "TWILIO_API_KEY"
+      }
+    },
+    {
+      "id": "twilio-account-sid",
+      "category": "secret",
+      "severity": "LOW",
+      "description": {
+        "es": "SID de cuenta de Twilio",
+        "en": "Twilio account SID"
+      },
+      "keywords": [
+        "ac"
+      ],
+      "regex": "\\b(AC[0-9a-f]{32})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "identifier",
+        "envVar": "TWILIO_ACCOUNT_SID"
+      }
+    },
+    {
+      "id": "sendgrid-api-key",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Clave de API de SendGrid",
+        "en": "SendGrid API key"
+      },
+      "keywords": [
+        "sg."
+      ],
+      "regex": "\\b(SG\\.[A-Za-z0-9_-]{16,}\\.[A-Za-z0-9_-]{16,})",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "SENDGRID_API_KEY"
+      }
+    },
+    {
+      "id": "mailgun-api-key",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Clave privada de Mailgun",
+        "en": "Mailgun private API key"
+      },
+      "keywords": [
+        "key-"
+      ],
+      "regex": "\\b(key-[a-f0-9]{32})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "MAILGUN_API_KEY"
+      }
+    },
+    {
+      "id": "openai-api-key",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Clave de API de OpenAI",
+        "en": "OpenAI API key"
+      },
+      "keywords": [
+        "sk-"
+      ],
+      "regex": "\\b(sk-(?:proj|svcacct|admin)-[A-Za-z0-9_-]{20,}|sk-[A-Za-z0-9]{32,})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "allowlist": {
+        "regexes": [
+          "^sk-ant-"
+        ]
+      },
+      "remediation": {
+        "kind": "secret",
+        "envVar": "OPENAI_API_KEY"
+      }
+    },
+    {
+      "id": "anthropic-api-key",
+      "category": "secret",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Clave o token de Anthropic",
+        "en": "Anthropic API key or token"
+      },
+      "keywords": [
+        "sk-ant-"
+      ],
+      "regex": "\\b(sk-ant-(?:api|oat|admin)\\d{2}-[A-Za-z0-9_-]{20,})",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "ANTHROPIC_API_KEY"
+      }
+    },
+    {
+      "id": "telegram-bot-token",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Token de bot de Telegram",
+        "en": "Telegram bot token"
+      },
+      "keywords": [],
+      "regex": "\\b(\\d{8,12}:A[A-Za-z0-9_-]{30,})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "TELEGRAM_BOT_TOKEN"
+      }
+    },
+    {
+      "id": "discord-webhook",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Webhook de Discord",
+        "en": "Discord webhook"
+      },
+      "keywords": [
+        "discord"
+      ],
+      "regex": "(https:\\/\\/(?:canary\\.|ptb\\.)?discord(?:app)?\\.com\\/api\\/webhooks\\/\\d{5,}\\/[A-Za-z0-9_-]{20,})",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "secret",
+      "remediation": {
+        "kind": "url",
+        "envVar": "DISCORD_WEBHOOK_URL"
+      }
+    },
+    {
+      "id": "jwt",
+      "category": "secret",
+      "severity": "MEDIUM",
+      "description": {
+        "es": "JSON Web Token",
+        "en": "JSON Web Token"
+      },
+      "keywords": [
+        "eyj"
+      ],
+      "regex": "\\b(eyJ[A-Za-z0-9_-]{10,}\\.eyJ[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]{8,})",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "JWT"
+      }
+    },
+    {
+      "id": "private-key-pem",
+      "category": "secret",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Clave privada en formato PEM",
+        "en": "PEM private key block"
+      },
+      "keywords": [
+        "-----begin"
+      ],
+      "regex": "(-----BEGIN (?:RSA |DSA |EC |OPENSSH |ENCRYPTED |PGP )?PRIVATE KEY(?: BLOCK)?-----)",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "pem",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "PRIVATE_KEY"
+      }
+    },
+    {
+      "id": "putty-private-key",
+      "category": "secret",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Clave privada de PuTTY",
+        "en": "PuTTY private key"
+      },
+      "keywords": [
+        "putty-user-key-file"
+      ],
+      "regex": "(PuTTY-User-Key-File-\\d)",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "pem",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "PRIVATE_KEY"
+      }
+    },
+    {
+      "id": "mercadopago-token",
+      "category": "secret",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Token de acceso de Mercado Pago",
+        "en": "Mercado Pago access token"
+      },
+      "keywords": [
+        "app_usr-",
+        "test-"
+      ],
+      "regex": "\\b((?:APP_USR|TEST)-[A-Za-z0-9]{8,}-\\d{6}-[A-Za-z0-9]{16,}-\\d{6,})",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "MERCADOPAGO_ACCESS_TOKEN"
+      }
+    },
+    {
+      "id": "conekta-key",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Llave privada de Conekta",
+        "en": "Conekta private key"
+      },
+      "keywords": [
+        "key_"
+      ],
+      "regex": "\\b(key_[A-Za-z0-9]{20,})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "CONEKTA_PRIVATE_KEY"
+      }
+    },
+    {
+      "id": "openpay-secret-key",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Llave secreta de Openpay",
+        "en": "Openpay secret key"
+      },
+      "keywords": [
+        "sk_"
+      ],
+      "regex": "\\b(sk_[a-f0-9]{32})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "OPENPAY_PRIVATE_KEY"
+      }
+    },
+    {
+      "id": "azure-storage-account-key",
+      "category": "secret",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Clave de cuenta de Azure Storage",
+        "en": "Azure Storage account key"
+      },
+      "keywords": [
+        "accountkey="
+      ],
+      "regex": "AccountKey=([A-Za-z0-9+/]{86,88}={0,2})",
+      "flags": "i",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "secret",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "AZURE_STORAGE_KEY"
+      }
+    },
+    {
+      "id": "digitalocean-token",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Token de DigitalOcean",
+        "en": "DigitalOcean personal access token"
+      },
+      "keywords": [
+        "dop_v1_"
+      ],
+      "regex": "\\b(dop_v1_[a-f0-9]{64})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "DIGITALOCEAN_TOKEN"
+      }
+    },
+    {
+      "id": "huggingface-token",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Token de Hugging Face",
+        "en": "Hugging Face token"
+      },
+      "keywords": [
+        "hf_"
+      ],
+      "regex": "\\b(hf_[A-Za-z]{34})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "HUGGINGFACE_TOKEN"
+      }
+    },
+    {
+      "id": "shopify-token",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Token de Shopify",
+        "en": "Shopify token"
+      },
+      "keywords": [
+        "shpat_",
+        "shpss_",
+        "shpca_",
+        "shppa_"
+      ],
+      "regex": "\\b(shp(?:at|ss|ca|pa)_[a-fA-F0-9]{32})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "SHOPIFY_TOKEN"
+      }
+    },
+    {
+      "id": "square-token",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Token de Square",
+        "en": "Square access token"
+      },
+      "keywords": [
+        "sq0atp-",
+        "sq0csp-",
+        "eaaa"
+      ],
+      "regex": "\\b((?:sq0atp-|sq0csp-|EAAA)[A-Za-z0-9_-]{22,60})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "SQUARE_ACCESS_TOKEN"
+      }
+    },
+    {
+      "id": "databricks-token",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Token de Databricks",
+        "en": "Databricks token"
+      },
+      "keywords": [
+        "dapi"
+      ],
+      "regex": "\\b(dapi[a-f0-9]{32})\\b",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "DATABRICKS_TOKEN"
+      }
+    },
+    {
+      "id": "vault-service-token",
+      "category": "secret",
+      "severity": "CRITICAL",
+      "description": {
+        "es": "Token de servicio de HashiCorp Vault",
+        "en": "HashiCorp Vault service token"
+      },
+      "keywords": [
+        "hvs."
+      ],
+      "regex": "\\b(hvs\\.[A-Za-z0-9_-]{20,})",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "VAULT_TOKEN"
+      }
+    },
+    {
+      "id": "pypi-token",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "Token de subida de PyPI",
+        "en": "PyPI upload token"
+      },
+      "keywords": [
+        "pypi-ageichlwas5vcmc",
+        "pypi-"
+      ],
+      "regex": "\\b(pypi-[A-Za-z0-9_-]{40,})",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "token",
+      "remediation": {
+        "kind": "secret",
+        "envVar": "PYPI_TOKEN"
+      }
+    },
+    {
+      "id": "sentry-dsn",
+      "category": "secret",
+      "severity": "MEDIUM",
+      "description": {
+        "es": "DSN de Sentry con clave",
+        "en": "Sentry DSN with key"
+      },
+      "keywords": [
+        "sentry.io"
+      ],
+      "regex": "(https:\\/\\/[a-f0-9]{32}@o\\d+\\.ingest\\.[a-z.]*sentry\\.io\\/\\d+)",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "secret",
+      "remediation": {
+        "kind": "url",
+        "envVar": "SENTRY_DSN"
+      }
+    },
+    {
+      "id": "cloudinary-url",
+      "category": "secret",
+      "severity": "HIGH",
+      "description": {
+        "es": "URL de Cloudinary con credenciales",
+        "en": "Cloudinary URL with credentials"
+      },
+      "keywords": [
+        "cloudinary://"
+      ],
+      "regex": "(cloudinary:\\/\\/\\d{6,}:[A-Za-z0-9_-]{10,}@[a-z0-9_-]+)",
+      "secretGroup": 1,
+      "family": "prefixed",
+      "maskKind": "secret",
+      "remediation": {
+        "kind": "url",
+        "envVar": "CLOUDINARY_URL"
+      }
+    }
+  ]
+}
