@@ -3,6 +3,7 @@
 // mexicana, montaje del workspace de IA, y comprobación de que las guardas bloquean.
 // Todos los valores sensibles de este archivo son FALSOS.
 import { test, before, after } from 'node:test';
+import { FALSOS } from '../fixtures/valores-falsos.mjs';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -12,9 +13,9 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const BIN = join(ROOT, 'dist', 'bot-secure.mjs');
-const AWS_FALSA = 'AKIA4KJQ2ZLMNPQR7TWX';
-const STRIPE_FALSA = 'sk_live_VALOR_RETIRADO';
-const PASS_FALSA = 'Pr0d-P4ss-2026';
+const AWS_FALSA = FALSOS.aws;
+const STRIPE_FALSA = FALSOS.stripeLive;
+const PASS_FALSA = FALSOS.claveProduccion;
 
 let LAB, WS;
 

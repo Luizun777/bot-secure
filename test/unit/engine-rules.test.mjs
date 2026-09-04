@@ -1,5 +1,6 @@
 // Catálogo de reglas: esquema, unicidad, compilación y prefiltro de keywords.
 import { strict as assert } from 'node:assert';
+import { FALSOS } from '../fixtures/valores-falsos.mjs';
 import { test } from 'node:test';
 import { compiledRules, globToRegExp, loadRules, matchesAny, sliceLine, RULES_VERSION, scanContent, MAX_LINE } from '../../src/engine/rules.mjs';
 
@@ -52,14 +53,14 @@ test('el prefiltro por keyword no impide detectar tokens sin palabra de contexto
   const text = [
     'AKIAIOSFODNN7EXAMPLE',
     'ghp_FAKE0000FAKE0000FAKE0000FAKE0000FAKE',
-    'glpat-VALOR_RETIRADO',
-    'npm_FAKE0000FAKE0000FAKE0000FAKE0000FAKE',
-    'AIzaFAKE0000FAKE0000FAKE0000FAKE0000FAK',
-    'sk_live_VALOR_RETIRADO',
-    'sk-ant-api03-FAKE0000FAKE0000FAKE0000FAKE0000',
-    'xoxb-VALOR-RETIRADO',
-    'hf_VALOR_RETIRADO',
-    '-----BEGIN RSA PRIVATE KEY-----',
+    FALSOS.gitlab,
+    FALSOS.npm,
+    FALSOS.google,
+    FALSOS.stripeLive,
+    FALSOS.anthropic,
+    FALSOS.slackBot,
+    FALSOS.huggingface,
+    FALSOS.pemInicio,
   ].join('\n');
   const found = await scanContent(text, { path: 'sin-contexto.txt' });
   const ids = new Set(found.map((f) => f.ruleId));
