@@ -22,3 +22,17 @@ export function genericMigrationHint(orm, envVar) {
   const base = `Ejecuta las migraciones en el HOST con ${envVar} apuntando a la BD de IA (bot-secure db up las corre por ti si detecta el ORM).`;
   return orm ? `${base} ORM detectado: ${orm}.` : base;
 }
+
+/** Punto de montaje (solo lectura) de `mocks/db` dentro del contenedor. */
+export const SQL_MOUNT = '/sql';
+
+/** Ruta dentro del contenedor de un archivo relativo a `mocks/db`. */
+export const inContainer = (rel) => `${SQL_MOUNT}/${String(rel).split('\\').join('/')}`;
+
+/** Healthcheck con los tiempos por defecto del bot (≤ 90 s de espera total). */
+export function healthcheck(test, { interval = '5s', timeout = '5s', retries = 18, startPeriod = '10s' } = {}) {
+  return { test: ['CMD-SHELL', test], interval, timeout, retries, start_period: startPeriod };
+}
+
+/** Nombre del contenedor y del volumen de la BD de IA del proyecto. */
+export const dbContainerName = (policy) => `${policy?.project || 'proyecto'}-ai-db`;

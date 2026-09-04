@@ -1,0 +1,123 @@
+# Evidencia real: test/e2e/workspace-flow.test.mjs
+# Generado: 2026-09-04T03:43:17.154Z
+# node v26.7.0 · darwin · git version 2.50.1 (Apple Git-155)
+
+### bot-secure workspace create tienda  (exit 0)
+✅ Workspace de IA creado en <tmp>/tienda-ai
+Siguiente paso: cd "<tmp>/tienda-ai" && bot-secure workspace add <remoto> --kind backend
+
+### bot-secure workspace add <tmp>/tienda-api --kind backend  (exit 0)
+✅ App backend registrada en ./backend (rama ai-dev)
+backend: Spring Boot (backend) · gestor de paquetes: maven
+puerto: 8081
+arranque: ./mvnw spring-boot:run · pruebas: ./mvnw -q test
+migraciones: flyway en src/main/resources/db/migration
+Siguiente paso: registra las demás apps y luego ejecuta bot-secure init
+
+### bot-secure workspace add <tmp>/tienda-web --kind frontend  (exit 0)
+✅ App frontend registrada en ./frontend (rama ai-dev)
+frontend: Angular (frontend) · gestor de paquetes: npm
+puerto: 4200
+arranque: npm start · pruebas: npm test
+Siguiente paso: registra las demás apps y luego ejecuta bot-secure init
+
+### backend: refspec y refs remotas
++refs/heads/ai-dev:refs/remotes/origin/ai-dev
+refs/remotes/origin/ai-dev
+
+### frontend: refspec y refs remotas
++refs/heads/ai-dev:refs/remotes/origin/ai-dev
+refs/remotes/origin/ai-dev
+
+### policy.apps
+[
+  {
+    "name": "backend",
+    "path": "backend",
+    "kind": "backend",
+    "stack": "spring",
+    "envStrategy": "spring-profile",
+    "packageManager": "maven",
+    "manifests": [
+      "pom.xml"
+    ],
+    "runCmd": "./mvnw spring-boot:run",
+    "testCmd": "./mvnw -q test",
+    "buildCmd": "./mvnw -q -DskipTests package",
+    "testFileCmd": "./mvnw -q -Dtest={file} test",
+    "port": 8081,
+    "registries": [],
+    "sdks": [],
+    "secretManagers": [],
+    "orm": "flyway",
+    "migrationsDir": "src/main/resources/db/migration",
+    "hasDockerfile": false,
+    "remote": "<tmp>/tienda-api",
+    "branch": "ai-dev",
+    "dependsOn": []
+  },
+  {
+    "name": "frontend",
+    "path": "frontend",
+    "kind": "frontend",
+    "stack": "angular",
+    "envStrategy": "angular-environments",
+    "packageManager": "npm",
+    "manifests": [
+      "package.json",
+      "angular.json"
+    ],
+    "runCmd": "npm start",
+    "testCmd": "npm test",
+    "buildCmd": "npm run build",
+    "lintCmd": "npm run lint",
+    "testFileCmd": "npx ng test --watch=false --include={file}",
+    "port": 4200,
+    "registries": [],
+    "sdks": [],
+    "secretManagers": [],
+    "hasDockerfile": false,
+    "remote": "<tmp>/tienda-web",
+    "branch": "ai-dev",
+    "dependsOn": [
+      "backend"
+    ]
+  }
+]
+
+### bot-secure workspace status  (exit 0)
+Workspace <tmp>/tienda-ai
+backend: ai-dev
+frontend: ai-dev
+
+- backend → ./backend (Spring Boot, :8081) · arranque: ./mvnw spring-boot:run · pruebas: ./mvnw -q test
+- frontend → ./frontend (Angular, :4200) · arranque: npm start · pruebas: npm test · consume: http://localhost:8081
+
+### bot-secure branch verify --no-hooks  (exit 0)
+▸ Verificando <tmp>/tienda-ai/backend
+✅ El clon de <tmp>/tienda-ai/backend está bien: solo la rama ai-dev, sin refs protegidas
+▸ Verificando <tmp>/tienda-ai/frontend
+✅ El clon de <tmp>/tienda-ai/frontend está bien: solo la rama ai-dev, sin refs protegidas
+
+### bot-secure branch verify clon-normal --no-hooks  (exit 1)
+Problemas en <tmp>/tienda-ai/clon-normal: 3
+Arreglo: git -C "<tmp>/tienda-ai/clon-normal" config --replace-all remote.origin.fetch "+refs/heads/ai-dev:refs/remotes/origin/ai-dev"
+Arreglo: git -C "<tmp>/tienda-ai/clon-normal" update-ref -d refs/remotes/origin/dev
+Arreglo: git -C "<tmp>/tienda-ai/clon-normal" switch ai-dev
+Vuelve a ejecutarlo con --fix para aplicar los arreglos seguros
+⛔ El refspec del remoto no está restringido a la rama de IA (actual: +refs/heads/*:refs/remotes/origin/*)
+⛔ Hay referencias remotas de ramas protegidas: dev
+⛔ La rama activa no es la rama de IA (actual: dev)
+
+### bot-secure branch verify clon-normal --no-hooks --fix  (exit 0)
+Problemas en <tmp>/tienda-ai/clon-normal: 3
+Arreglo: git -C "<tmp>/tienda-ai/clon-normal" config --replace-all remote.origin.fetch "+refs/heads/ai-dev:refs/remotes/origin/ai-dev"
+Arreglo: git -C "<tmp>/tienda-ai/clon-normal" update-ref -d refs/remotes/origin/dev
+Arreglo: git -C "<tmp>/tienda-ai/clon-normal" switch ai-dev
+✅ Arreglado: refspec
+✅ Arreglado: remote-protected-ref
+✅ Arreglado: branch
+✅ El clon de <tmp>/tienda-ai/clon-normal está bien: solo la rama ai-dev, sin refs protegidas
+⛔ El refspec del remoto no está restringido a la rama de IA (actual: +refs/heads/*:refs/remotes/origin/*)
+⛔ Hay referencias remotas de ramas protegidas: dev
+⛔ La rama activa no es la rama de IA (actual: dev)

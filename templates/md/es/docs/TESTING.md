@@ -16,7 +16,7 @@ Sustituye `<ruta>`/`<Clase>` por el archivo o clase real. Si un comando no funci
 
 ## Dónde viven las pruebas
 {{#each apps}}
-- **{{name}}**: {{#each testGlobs}}`{{.}}`{{#unless @last}}, {{/unless}}{{/each}}
+- **{{name}}**: {{testGlobsMd}}
 {{/each}}
 <!-- TODO (/bootstrap-contexto): confirma las rutas reales y el runner (jest/vitest/pytest/JUnit…) por app. -->
 

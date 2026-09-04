@@ -52,6 +52,20 @@ test('dist/guard.mjs se ejecuta fuera del repo del bot, sin resolver rutas relat
   }
 });
 
+test('dist/bot-secure.mjs ejecuta SUBCOMANDOS fuera del repo, con mensaje de arreglo', (t) => {
+  const dist = join(ROOT, 'dist', 'bot-secure.mjs');
+  if (!existsSync(dist)) { const r = construir(); if (r.status !== 0) return t.skip('no se pudo construir'); }
+  const dir = mkdtempSync(join(tmpdir(), 'bs-cli-'));
+  try {
+    const r = spawnSync(process.execPath, [dist, 'workspace', 'status'], { cwd: dir, encoding: 'utf8', env: { ...process.env, NO_COLOR: '1' }, timeout: 30000 });
+    const salida = (r.stdout || '') + (r.stderr || '');
+    // El binario debe traer sus comandos dentro: nada de cargar el árbol de fuentes del bot.
+    assert.doesNotMatch(salida, /Cannot find module|ERR_MODULE_NOT_FOUND/, salida.slice(0, 300));
+    assert.doesNotMatch(salida, /Error interno|at Object.run/, 'el error debe ser el mensaje del usuario, no una traza:\n' + salida.slice(0, 300));
+    assert.match(salida, /Arreglo:/, 'todo error debe decir cómo arreglarlo: ' + salida.slice(0, 200));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('dist/bot-secure.mjs se ejecuta fuera del repo', (t) => {
   const dist = join(ROOT, 'dist', 'bot-secure.mjs');
   if (!existsSync(dist)) {
@@ -62,4 +76,7 @@ test('dist/bot-secure.mjs se ejecuta fuera del repo', (t) => {
   const salida = (r.stdout || '') + (r.stderr || '');
   assert.doesNotMatch(salida, /Cannot find module|ERR_MODULE_NOT_FOUND/, salida.slice(0, 400));
   assert.match(r.stdout, /bot-secure \d+\.\d+\.\d+/);
+  // el guard va empaquetado dentro: no debe autoejecutarse al arrancar el CLI
+  assert.equal(r.stderr.trim(), '', '--version no debe escribir nada en stderr: ' + r.stderr.slice(0, 200));
+  assert.equal(r.status, 0);
 });

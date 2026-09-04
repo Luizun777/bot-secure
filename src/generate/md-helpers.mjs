@@ -7,7 +7,16 @@ import { render } from '../lib/template.mjs';
 import { BotSecureError } from '../lib/errors.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-export const TEMPLATES_DIR = path.join(HERE, '..', '..', 'templates');
+/**
+ * Raíz de las plantillas. Desde el código fuente es `<repo>/templates` (HERE = src/generate);
+ * desde el bundle de esbuild `import.meta.url` apunta a `dist/`, así que también se prueba `dist/../templates`.
+ * Las plantillas viajan en el paquete npm (`files: ["templates", …]`), nunca se leen del proyecto destino.
+ */
+export const TEMPLATES_DIR = [
+  path.join(HERE, '..', '..', 'templates'), // src/generate/../../templates
+  path.join(HERE, '..', 'templates'), // dist/../templates (bundle)
+  path.join(HERE, 'templates'),
+].find((p) => existsSync(p)) ?? path.join(HERE, '..', '..', 'templates');
 
 /** @typedef {{ path: string, content: string, mode?: string }} Artifact */
 
@@ -126,6 +135,8 @@ function appView(app, all, db) {
   v.runCmdAi = runCmdAi({ ...app, stack: v.stack });
   v.testOneCmd = testOneCmd({ ...app, stack: v.stack, packageManager: v.packageManager });
   v.testGlobs = testGlobs(v);
+  // Precalculado: render() no soporta {{#each}} anidado dentro de otro {{#each}}.
+  v.testGlobsMd = v.testGlobs.map((g) => `\`${g}\``).join(', ');
   v.mapConsumes = v.isBackend ? (db.engine ? `BD de IA 127.0.0.1:${db.port}` : '—') : (consumes || '—');
   return v;
 }

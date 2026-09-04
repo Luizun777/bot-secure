@@ -1,0 +1,5 @@
+{
+  "profiles": {
+    "Api": { "commandName": "Project", "applicationUrl": "http://localhost:5080" }
+  }
+}

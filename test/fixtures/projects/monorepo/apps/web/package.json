@@ -1,0 +1,6 @@
+{
+  "name": "web",
+  "scripts": { "dev": "vite", "build": "vite build" },
+  "dependencies": { "vue": "^3.4.31" },
+  "devDependencies": { "vite": "^5.4.0" }
+}

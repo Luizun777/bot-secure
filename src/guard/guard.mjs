@@ -676,20 +676,7 @@ function readStdin() {
   try { return readFileSync(0, 'utf8'); } catch { return ''; }
 }
 
-// Solo se autoejecuta si ESTE archivo es el que node arrancó.
-// Se comparan RUTAS REALES: en macOS /tmp y /var son enlaces simbólicos, así que comparar
-// import.meta.url con argv[1] daba falso y el guard no arrancaba (fallo abierto: permitía todo).
-function esPuntoDeEntrada() {
-  if (!process.argv[1]) return false;
-  try {
-    const propio = realpathSync(fileURLToPath(import.meta.url));
-    const arrancado = realpathSync(resolve(process.argv[1]));
-    return propio === arrancado;
-  } catch {
-    return false;
-  }
-}
-if (esPuntoDeEntrada()) {
-  const event = process.argv[2] ?? 'pre-tool';
-  main(event, readStdin()).then((code) => process.exit(typeof code === 'number' ? code : 2), () => process.exit(2));
-}
+// Este módulo es una LIBRERÍA pura: no se autoejecuta.
+// El arranque vive en src/guard/entry.mjs, que es lo que se empaqueta como dist/guard.mjs.
+// Antes se autoejecutaba al detectar que era el punto de entrada, pero al empaquetar el CLI
+// (que importa el comando `guard`) esa detección daba verdadero y el guard corría en cada invocación.

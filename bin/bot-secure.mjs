@@ -7,12 +7,17 @@ import { parseArgs } from '../src/lib/args.mjs';
 import { BotSecureError, EXIT } from '../src/lib/errors.mjs';
 import { detectLang, makeT } from '../src/lib/i18n.mjs';
 import { makeLog, color } from '../src/lib/log.mjs';
+import { COMMANDS } from '../src/cli/_registry.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CLI_DIR = join(HERE, '..', 'src', 'cli');
 const GLOBAL_BOOLEANS = ['json', 'dry-run', 'yes', 'help', 'version', 'quiet'];
 
 async function loadCommands() {
+  // El registro estático es la fuente: funciona igual desde el repo y desde dist/.
+  const registrados = COMMANDS.filter((c) => c && c.name && typeof c.run === 'function');
+  if (registrados.length) return registrados;
+  // Respaldo solo para desarrollo, si alguien añadió un comando sin regenerar el registro.
   const cmds = [];
   for (const f of readdirSync(CLI_DIR).sort()) {
     if (!f.endsWith('.mjs') || f.startsWith('_')) continue;

@@ -1,0 +1,13 @@
+{
+  "appSummary": "{name}: {stack} ({kind}) · gestor de paquetes: {packageManager}",
+  "appPort": "puerto: {port}",
+  "appCommands": "arranque: {run} · pruebas: {test}",
+  "appOrm": "migraciones: {orm} en {migrationsDir}",
+  "appSdks": "SDKs con llaves: {sdks}",
+  "unknownStack": "No se reconoció el stack de {path}: se registra como desconocido",
+  "claudeMissing": "No se encontró el CLI de Claude Code en el PATH",
+  "accountOrg": "Cuenta de Claude: organización {org} ({email})",
+  "accountPersonal": "Cuenta de Claude personal ({email}): para datos de clientes se recomienda una cuenta de empresa",
+  "accountUnknown": "No se pudo leer la cuenta de Claude (~/.claude.json)",
+  "noContainerRuntime": "No hay Docker ni Podman disponibles en esta máquina"
+}

@@ -7,11 +7,12 @@ let esbuild;
 try { esbuild = require('esbuild'); } catch { console.error('Falta esbuild. Arreglo: npm install'); process.exit(2); }
 // las traducciones deben incrustarse antes de empaquetar
 await import('./gen-i18n.mjs');
+await import('./gen-commands.mjs');
 mkdirSync('dist', { recursive: true });
 const targets = [
   // el propio bin/bot-secure.mjs ya trae el shebang: añadir banner lo duplicaba y rompía el bundle
   { entry: 'bin/bot-secure.mjs', out: 'dist/bot-secure.mjs', banner: '' },
-  { entry: 'src/guard/guard.mjs', out: 'dist/guard.mjs', banner: '' },
+  { entry: 'src/guard/entry.mjs', out: 'dist/guard.mjs', banner: '' },
 ];
 for (const t of targets) {
   await esbuild.build({ entryPoints: [t.entry], bundle: true, platform: 'node', format: 'esm', target: 'node20', outfile: t.out, banner: { js: t.banner }, legalComments: 'none', logLevel: 'error' });

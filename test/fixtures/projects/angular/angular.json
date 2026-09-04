@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "projects": {
+    "web-angular": {
+      "architect": {
+        "serve": { "options": { "port": 4200 } }
+      }
+    }
+  }
+}

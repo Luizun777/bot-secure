@@ -55,7 +55,7 @@ export async function generateContext(root, policy, apps) {
 export async function generateAll(root, policy, apps) {
   const out = await generateContext(root, policy, apps);
   const warnings = [];
-  const env = await optional('./env-ai.mjs');
+  const env = (await optional('./env-index.mjs')) ?? (await optional('./env-ai.mjs'));
   if (typeof env?.generateEnvAll === 'function') {
     try {
       const extra = await env.generateEnvAll(root, policy, apps);

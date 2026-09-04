@@ -1,0 +1,5 @@
+{
+  "name": "api",
+  "scripts": { "start": "node index.js", "test": "node --test" },
+  "dependencies": { "fastify": "^4.28.1" }
+}

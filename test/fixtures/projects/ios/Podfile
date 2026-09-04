@@ -1,0 +1,4 @@
+platform :ios, '15.0'
+target 'App' do
+  use_frameworks!
+end

@@ -1,0 +1,5 @@
+plugins { id 'com.android.application' }
+android { namespace 'mx.ejemplo.app' }
+dependencies {
+    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
+}
