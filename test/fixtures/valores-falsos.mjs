@@ -34,5 +34,6 @@ export const FICHEROS_GENERADOS = {
   'ia-mail.txt': `MAILGUN=${FALSOS.mailgun}\nOPENAI=${FALSOS.openai}\nANTHROPIC=${FALSOS.anthropic}${F.repeat(7)}FAKE0AA\n`,
   'slack.txt': `SLACK_BOT=${FALSOS.slackBot}\nhook: ${FALSOS.slackHook}\n`,
   'twilio-sendgrid.txt': `TWILIO_API_KEY=${FALSOS.twilioKey}\nSENDGRID=${FALSOS.sendgrid}\n`,
+  'gitlab-npm.txt': `GITLAB=${FALSOS.gitlab}\n//registry.npmjs.org/:_authToken=${FALSOS.npm}\n`,
   'stripe.js': `const stripe = require("stripe")("${FALSOS.stripeLive}");\nconst endpointSecret = "${FALSOS.stripeWebhook}";\n`,
 };
