@@ -55,7 +55,17 @@ test('writeReports: json/md/sarif no contienen el valor original pero sí su má
       const txt = readFileSync(p, 'utf8');
       assert.ok(!txt.includes(FAKE), `${p} no contiene el secreto`);
       assert.ok(!txt.includes(CLABE), `${p} no contiene la CLABE`);
-      assert.ok(!/\d{11,}/.test(txt), `${p} no contiene corridas de 11+ dígitos (oráculo PII)`);
+      // Oráculo de PII: el reporte no debe llevar corridas largas de dígitos (una CLABE, un NSS,
+      // una tarjeta). Las huellas HMAC y los sha256 son hexadecimal y a veces contienen 11 dígitos
+      // seguidos por puro azar (hacía fallar esta prueba una de cada tres veces): se descartan
+      // antes de mirar, junto con las rutas del sistema, que no son datos del usuario.
+      const sinHexNiRutas = txt
+        // Solo se ignora el hexadecimal que CONTIENE letras (un hash). Una corrida de puros
+        // dígitos no se oculta: es exactamente lo que este oráculo busca (CLABE, NSS, tarjeta).
+        .replace(/\b(?=[0-9a-f]{16,}\b)(?=[0-9]*[a-f])[0-9a-f]+\b/gi, '<hash>')
+        .replace(/"(root|file|path|uri|generatedAt)":\s*"[^"]*"/g, '"$1":"<ruta>"')
+        .replace(/\d{4}-\d{2}-\d{2}T[\d:.]+Z?/g, '<fecha>');
+      assert.ok(!/\d{11,}/.test(sinHexNiRutas), `${p} no contiene corridas de 11+ dígitos (oráculo PII)`);
       assert.ok(txt.includes('AKIA…(20)'), `${p} contiene la máscara del token`);
       assert.ok(txt.includes('012…'), `${p} contiene la máscara de la CLABE`);
     }
