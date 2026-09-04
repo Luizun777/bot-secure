@@ -77,7 +77,7 @@
   "initScanFailed": "No se pudo escanear ({message}); la generación continúa",
   "initGenerating": "Generando contexto, reglas y guardas…",
   "initArtifact": "{action}  {path}",
-  "initHumanEdited": "{path} lo editaste tú: se dejó la versión nueva en {path}.new",
+  "initHumanEdited": "{path} lo editaste tú: se dejó la versión nueva en {path}.new. Compara y aplica lo que falte: diff {path} {path}.new",
   "initGuardBundle": "Guarda instalada desde {from}",
   "compileFailed": "No se pudieron compilar las guardas del workspace: {message}",
   "initGuardShim": "No existe dist/guard.mjs: se instaló la guarda en modo desarrollo",

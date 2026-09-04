@@ -1,5 +1,5 @@
 # Evidencia real: test/e2e/cli-core-init.test.mjs
-# Generado: 2026-09-04T04:21:02.652Z
+# Generado: 2026-09-04T04:24:22.680Z
 # node v26.7.0 · darwin
 
 ### bot-secure init --yes  (exit 0)
@@ -330,7 +330,7 @@ Siguiente paso: bot-secure db up  ·  luego  bot-secure claude
   "guard": {
     "action": "bundle",
     "from": "<repo>/dist/guard.mjs",
-    "sha256": "1df0331f4f6d8f7d216f497e9298fe9e8200bf297a1291852e3052081040b1a7"
+    "sha256": "a54d8f7632b91f770ad80201588f6f9ca59444709f4b9affae66a018ff054858"
   },
   "hooks": [],
   "dryRun": false

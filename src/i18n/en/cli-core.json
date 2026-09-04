@@ -77,7 +77,7 @@
   "initScanFailed": "Could not scan ({message}); generation continues",
   "initGenerating": "Generating context, rules and guardrails…",
   "initArtifact": "{action}  {path}",
-  "initHumanEdited": "{path} was edited by you: the new version was left at {path}.new",
+  "initHumanEdited": "{path} was edited by you: the new version was left at {path}.new Compare and apply what is missing: diff {path} {path}.new",
   "initGuardBundle": "Guard installed from {from}",
   "compileFailed": "The workspace guardrails could not be compiled: {message}",
   "initGuardShim": "dist/guard.mjs does not exist: the guard was installed in development mode",

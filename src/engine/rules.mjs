@@ -16,7 +16,6 @@ import { BotSecureError } from '../lib/errors.mjs';
 import { listAssets, readAsset } from '../assets/index.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const RULES_DIR = join(HERE, 'rules');
 
 /** Versión del catálogo de reglas (va en el reporte y en lock.json). */
 export const RULES_VERSION = '2026.09.0';

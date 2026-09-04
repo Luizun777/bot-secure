@@ -1,5 +1,6 @@
 // Punto de entrada del módulo generate: contexto MD (este módulo) + artefactos de entorno (módulo generate-env, opcional).
 import path from 'node:path';
+import { generateEnvAll } from './env-index.mjs';
 import { writeGenerated } from '../lib/fsx.mjs';
 import { buildView, lineCount, toPosix } from './md-helpers.mjs';
 import { generateClaude, CLAUDE_MAX_LINES, APP_CLAUDE_MAX_LINES } from './claude.mjs';
@@ -55,15 +56,13 @@ export async function generateContext(root, policy, apps) {
 export async function generateAll(root, policy, apps) {
   const out = await generateContext(root, policy, apps);
   const warnings = [];
-  const env = (await optional('./env-index.mjs')) ?? (await optional('./env-ai.mjs'));
-  if (typeof env?.generateEnvAll === 'function') {
-    try {
-      const extra = await env.generateEnvAll(root, policy, apps);
-      if (Array.isArray(extra)) out.push(...extra);
-    } catch (e) { warnings.push(`generate.envFailed:${e?.message ?? e}`); }
-  } else {
-    warnings.push('generate.envSkipped');
-  }
+  // Importación ESTÁTICA: con un import dinámico de especificador variable, esbuild no
+  // puede incluir el módulo y el binario se quedaba sin los archivos de entorno (.env.ai,
+  // application-ai.yml, environment.ai.ts) avisando 'generate.envSkipped'.
+  try {
+    const extra = await generateEnvAll(root, policy, apps);
+    if (Array.isArray(extra)) out.push(...extra);
+  } catch (e) { warnings.push(`generate.envFailed:${e?.message ?? e}`); }
   return Object.assign(out, { warnings });
 }
 

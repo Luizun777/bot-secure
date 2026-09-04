@@ -60,7 +60,11 @@ test('ningún módulo lee datos del repo con rutas relativas al código', () => 
       const rel = posix(relative(ROOT, p));
       if (permitidos.includes(rel)) continue;
       const src = readFileSync(p, 'utf8');
-      if (/join\(HERE,\s*'\.\.'[^)]*'(templates|rules|catalogs)'/.test(src)) sospechosos.push(rel);
+      // Dos formas de leer del disco que ya rompieron el despliegue:
+      //   join(HERE, '..', 'templates', …)      y      new URL('./rules/x.json', import.meta.url)
+      const porJoin = /join\(HERE[^)]*'(templates|rules|catalogs)'/.test(src);
+      const porUrl = /new URL\(\s*[`'"]\.\/(rules|catalogs|templates)\//.test(src);
+      if (porJoin || porUrl) sospechosos.push(rel);
     }
   };
   rec(join(ROOT, 'src'));

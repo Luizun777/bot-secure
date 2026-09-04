@@ -9,6 +9,7 @@
 // entidades, fechas plausibles, rangos de subdelegación) antes de dar `valid: true`.
 
 import { readFileSync } from 'node:fs';
+import { readAssetJson } from '../assets/index.mjs';
 import { SYNTHETIC_MARKER } from './synthetic-mx.mjs';
 
 /* ------------------------------------------------------------------------------------------ */
@@ -24,8 +25,7 @@ const catalogCache = new Map();
  */
 export function catalog(name) {
   if (!catalogCache.has(name)) {
-    const url = new URL(`./catalogs/${name}.json`, import.meta.url);
-    catalogCache.set(name, JSON.parse(readFileSync(url, 'utf8')));
+    catalogCache.set(name, readAssetJson('catalogs', `${name}.json`));
   }
   return catalogCache.get(name);
 }
@@ -427,8 +427,8 @@ let rulesCache = null;
  */
 export function loadPiiRules() {
   if (!rulesCache) {
-    const url = new URL('./rules/pii.json', import.meta.url);
-    rulesCache = JSON.parse(readFileSync(url, 'utf8')).rules;
+    // Del acceso a datos: en el repo lee el disco, desde dist/ usa lo incrustado.
+    rulesCache = readAssetJson('rules', 'pii.json').rules;
   }
   return rulesCache;
 }
