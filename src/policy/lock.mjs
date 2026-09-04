@@ -1,10 +1,9 @@
 // lock.json (versionado): hashes de los artefactos generados + hash del guard. Sin rutas de máquina.
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
+import PKG from '../../package.json' with { type: 'json' };
 import { dirname, join, sep } from 'node:path';
 
-const require = createRequire(import.meta.url);
 export const LOCK_FILE = join('.bot-secure', 'lock.json');
 export const GUARD_FILE = join('.claude', 'hooks', 'guard.mjs');
 export const CLAUDE_CODE_MIN = '2.1.246';
@@ -13,7 +12,7 @@ const sha256 = (buf) => createHash('sha256').update(buf).digest('hex');
 const toPosix = (p) => p.split(sep).join('/');
 
 function botVersion() {
-  try { return require('../../package.json').version; } catch { return '0.0.0'; }
+  return PKG.version ?? '0.0.0';
 }
 
 async function rulesVersion() {

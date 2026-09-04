@@ -12,3 +12,4 @@ coverage/
 CLAUDE.local.md
 # temporales de pruebas
 test/e2e/tmp/
+# el bundle se genera con npm run build

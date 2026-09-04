@@ -5,9 +5,12 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 let esbuild;
 try { esbuild = require('esbuild'); } catch { console.error('Falta esbuild. Arreglo: npm install'); process.exit(2); }
+// las traducciones deben incrustarse antes de empaquetar
+await import('./gen-i18n.mjs');
 mkdirSync('dist', { recursive: true });
 const targets = [
-  { entry: 'bin/bot-secure.mjs', out: 'dist/bot-secure.mjs', banner: '#!/usr/bin/env node' },
+  // el propio bin/bot-secure.mjs ya trae el shebang: añadir banner lo duplicaba y rompía el bundle
+  { entry: 'bin/bot-secure.mjs', out: 'dist/bot-secure.mjs', banner: '' },
   { entry: 'src/guard/guard.mjs', out: 'dist/guard.mjs', banner: '' },
 ];
 for (const t of targets) {

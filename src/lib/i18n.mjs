@@ -2,6 +2,7 @@
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { BUNDLED } from '../i18n/bundled.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const cache = new Map();
@@ -25,7 +26,12 @@ function loadDir(lang) {
 }
 
 export function messages(lang = 'es') {
-  if (!cache.has(lang)) cache.set(lang, loadDir(lang));
+  if (!cache.has(lang)) {
+    // En el repo se leen del disco (permite editar sin recompilar); en el binario
+    // empaquetado no existe src/i18n/, así que se usan los mensajes incrustados.
+    const delDisco = loadDir(lang);
+    cache.set(lang, Object.keys(delDisco).length ? delDisco : (BUNDLED[lang] ?? {}));
+  }
   return cache.get(lang);
 }
 

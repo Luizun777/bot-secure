@@ -1,10 +1,9 @@
 // API pública del módulo policy: cargar/guardar/validar/compilar la política y manejar lock/local.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
+import DEFAULTS from './defaults.json' with { type: 'json' };
 import { dirname, join } from 'node:path';
 import { validatePolicy } from './schema.mjs';
 
-const require = createRequire(import.meta.url);
 export const POLICY_FILE = join('.bot-secure', 'policy.json');
 
 export { validatePolicy, protectedBranchRe, branchPatternToRegExp } from './schema.mjs';
@@ -20,7 +19,7 @@ const clone = (o) => JSON.parse(JSON.stringify(o));
  * @param {{project?:string, apps?:object[], db?:object, profile?:string}} [opts]
  */
 export function defaultPolicy({ project = '', apps = [], db = {}, profile } = {}) {
-  const p = clone(require('./defaults.json'));
+  const p = clone(DEFAULTS);
   p.project = project;
   p.apps = apps.map((a) => ({ name: a.name, path: a.path ?? a.name, kind: a.kind ?? 'unknown', stack: a.stack ?? 'unknown', envStrategy: a.envStrategy ?? 'manual',
     packageManager: a.packageManager ?? '', runCmd: a.runCmd ?? '', testCmd: a.testCmd ?? '', port: a.port, dependsOn: a.dependsOn ?? [], remote: a.remote ?? '', branch: a.branch ?? p.branches.ai }));

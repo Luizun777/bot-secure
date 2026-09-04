@@ -1,11 +1,12 @@
 // Guarda de Claude Code: se ejecuta desde los hooks (.claude/hooks/run → node guard.mjs <evento>)
 // con el JSON del hook por stdin. Fail-closed: cualquier excepción bloquea (exit 2) salvo guard.mode='warn'.
 // Nunca escribe el VALOR de un secreto en stdout, stderr, audit.log ni en el parte de incidente.
-import { appendFileSync, existsSync, mkdirSync, openSync, readFileSync, readSync, closeSync, statSync, writeFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
+import { realpathSync, appendFileSync, existsSync, mkdirSync, openSync, readFileSync, readSync, closeSync, statSync, writeFileSync } from 'node:fs';
+import MENSAJES_ES from '../i18n/es/guard.json' with { type: 'json' };
+import MENSAJES_EN from '../i18n/en/guard.json' with { type: 'json' };
 import { homedir } from 'node:os';
 import { basename, dirname, join, relative, resolve, sep } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { gunzipSync } from 'node:zlib';
 import { git } from '../lib/exec.mjs';
 import { findWorkspaceRoot } from '../lib/paths.mjs';
@@ -16,8 +17,9 @@ import { protectedBranchRe } from '../policy/schema.mjs';
 import { classifyPath, isGuardPath, isInside } from '../policy/sensitive.mjs';
 import { analyze, isLiteralIp, resolvePath } from './bash-parser.mjs';
 
-const require = createRequire(import.meta.url);
-const MESSAGES = { es: require('../i18n/es/guard.json'), en: require('../i18n/en/guard.json') };
+// Importación estática: esbuild la empaqueta dentro de dist/guard.mjs (el guard
+// se despliega como un solo archivo y no puede resolver rutas relativas en destino).
+const MESSAGES = { es: MENSAJES_ES, en: MENSAJES_EN };
 
 const SEVERITIES = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'];
 const rank = (s) => { const i = SEVERITIES.indexOf(s); return i < 0 ? SEVERITIES.length : i; };
@@ -674,8 +676,20 @@ function readStdin() {
   try { return readFileSync(0, 'utf8'); } catch { return ''; }
 }
 
-// Solo se autoejecuta si ESTE archivo es el que node arrancó (el shim/bundle tiene su propio arranque).
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+// Solo se autoejecuta si ESTE archivo es el que node arrancó.
+// Se comparan RUTAS REALES: en macOS /tmp y /var son enlaces simbólicos, así que comparar
+// import.meta.url con argv[1] daba falso y el guard no arrancaba (fallo abierto: permitía todo).
+function esPuntoDeEntrada() {
+  if (!process.argv[1]) return false;
+  try {
+    const propio = realpathSync(fileURLToPath(import.meta.url));
+    const arrancado = realpathSync(resolve(process.argv[1]));
+    return propio === arrancado;
+  } catch {
+    return false;
+  }
+}
+if (esPuntoDeEntrada()) {
   const event = process.argv[2] ?? 'pre-tool';
   main(event, readStdin()).then((code) => process.exit(typeof code === 'number' ? code : 2), () => process.exit(2));
 }
