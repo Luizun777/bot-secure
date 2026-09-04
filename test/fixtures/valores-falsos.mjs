@@ -35,5 +35,13 @@ export const FICHEROS_GENERADOS = {
   'slack.txt': `SLACK_BOT=${FALSOS.slackBot}\nhook: ${FALSOS.slackHook}\n`,
   'twilio-sendgrid.txt': `TWILIO_API_KEY=${FALSOS.twilioKey}\nSENDGRID=${FALSOS.sendgrid}\n`,
   'gitlab-npm.txt': `GITLAB=${FALSOS.gitlab}\n//registry.npmjs.org/:_authToken=${FALSOS.npm}\n`,
+  'google.json': `{
+  "type": "service_account",
+  "project_id": "demo-ai",
+  "private_key_id": "abcdef0123456789abcdef0123456789abcdef01",
+  "client_email": "demo@demo-ai.iam.gserviceaccount.com",
+  "browser_key": ${JSON.stringify(FALSOS.google)}
+}
+`,
   'stripe.js': `const stripe = require("stripe")("${FALSOS.stripeLive}");\nconst endpointSecret = "${FALSOS.stripeWebhook}";\n`,
 };

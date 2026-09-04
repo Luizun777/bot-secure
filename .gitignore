@@ -21,3 +21,4 @@ test/fixtures/secrets-falsos/slack.txt
 test/fixtures/secrets-falsos/twilio-sendgrid.txt
 test/fixtures/secrets-falsos/stripe.js
 test/fixtures/secrets-falsos/gitlab-npm.txt
+test/fixtures/secrets-falsos/google.json
